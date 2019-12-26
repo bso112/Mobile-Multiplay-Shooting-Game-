@@ -9,31 +9,28 @@ using Photon.Pun;
 public class Effect : MonoBehaviour
 {
     private ParticleSystem ps;
-    //파티클의 지속시간
-    private float duration;
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
-        duration = ps.main.duration;
     }
     /// <summary>
     /// 파티클의 지속시간만큼 기다리고 파괴한다.
     /// </summary>
-    public void Delayed_Destroy()
+    public void Delayed_Destroy(float delay)
     {
-        Destroy(gameObject, duration);
+        Destroy(gameObject, delay);
     }
     /// <summary>
     /// 파티클의 지속시간만큼 기다리고 파괴한다.(포톤 디스트로이)
     /// </summary>
-    public void Photon_Destroy()
+    public void Photon_Destroy(float delay)
     {
-        StartCoroutine(Photon_Destroy_corutine());
+        StartCoroutine(Photon_Destroy_corutine(delay));
     }
-    private IEnumerator Photon_Destroy_corutine()
+    private IEnumerator Photon_Destroy_corutine(float delay)
     {
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(delay);
         PhotonNetwork.Destroy(gameObject);
     }
 }

@@ -15,7 +15,6 @@ public class SpreadingShooter : Shooter
 
     public Animator UltimateAni;
 
-    private float angleForEachShot;
     private int shotPosCount;
     private float timeCounter;
     private float timeStamp;
@@ -25,22 +24,21 @@ public class SpreadingShooter : Shooter
     void Start()
     {
         BaseStart();
-        angleForEachShot = spreadAngle / shotPerFire;
     }
 
     protected override IEnumerator Shoot(GameObject projectilePrefab)
     {
+        float angle = -spreadAngle / 2;
 
         for (int i = 0; i < shotPerFire; i++)
         {
-
-            //발사체 스폰
-            GameObject projectile = Photon.Pun.PhotonNetwork.Instantiate(projectilePrefab.name, shotPos[shotPosCount].position, Quaternion.Euler(transform.forward));
             //발사
-            Vector3 direction = new Vector3(shotPos[shotPosCount].forward.x, shotPos[shotPosCount].forward.y - (spreadAngle / 2) + (i * angleForEachShot), shotPos[shotPosCount].forward.z);
-            //Vector3 direction = shotPos[shotPosCount].forward;
+            Vector3 bulletAngle = new Vector3(0, shotPos[shotPosCount].eulerAngles.y + angle, 0);
+            angle += spreadAngle / shotPerFire;
+            //발사체 스폰
+            GameObject projectile = Photon.Pun.PhotonNetwork.Instantiate(projectilePrefab.name, shotPos[shotPosCount].position, Quaternion.Euler(bulletAngle));
             Rigidbody projectileRB = projectile.GetComponent<Rigidbody>();
-            projectileRB.AddForce(direction * shotPower, ForceMode.Force);
+            projectileRB.AddForce(projectile.transform.forward * shotPower);
         }
         shotPosCount++;
         shotPosCount %= shotPos.Length;

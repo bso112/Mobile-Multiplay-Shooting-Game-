@@ -15,7 +15,8 @@ public class Bush : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other)
-    {   
+    {
+        Debug.Log("trigger");
         //닿은게 플레이어면 부쉬는 투명하게 변하고, 플레이어 체력바를 숨긴다.
         if (other.transform.CompareTag("Player"))
         {

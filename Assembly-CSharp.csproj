@@ -102,6 +102,7 @@
     <Compile Include="Assets\Scripts\Character\CharacterSlot.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStats.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStatsUI.cs" />
+    <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerMotor.cs" />
     <Compile Include="Assets\Scripts\Coin.cs" />
     <Compile Include="Assets\Scripts\CoinGenerator.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Assets\Scripts\FollowCam.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameResultManager.cs" />
+    <Compile Include="Assets\Scripts\Helper\FindMissingScriptsRecursively.cs" />
     <Compile Include="Assets\Scripts\Helper\GradientHelper.cs" />
     <Compile Include="Assets\Scripts\Helper\MathParabola.cs" />
     <Compile Include="Assets\Scripts\Helper\Offline_setup.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Assets\Scripts\Helper\Singleton.cs" />
     <Compile Include="Assets\Scripts\ItemPickup.cs" />
     <Compile Include="Assets\Scripts\MasterClientAgent.cs" />
+    <Compile Include="Assets\Scripts\Mesh\Indecator.cs" />
     <Compile Include="Assets\Scripts\NetworkManager.cs" />
     <Compile Include="Assets\Scripts\ObjectPooler.cs" />
     <Compile Include="Assets\Scripts\ParabolaMovement.cs" />
@@ -134,6 +137,7 @@
     <Compile Include="Assets\Scripts\Shooters\StraightShooter.cs" />
     <Compile Include="Assets\Scripts\Stats.cs" />
     <None Include="Assets\External Tools\MegaPack1Lite\RomanCityPack1Lite\README.txt" />
+    <None Include="Assets\BrawlArenaKit\Shaders\Projector Multiply.shader" />
     <None Include="Assets\IconGenerator\Readme.txt" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />

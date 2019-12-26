@@ -9,17 +9,20 @@ using UnityEngine.UI;
 public class Offline_setup : MonoBehaviour
 {
     public GameObject characterPrefab;
-    public GameObject character;
+    private GameObject character;
     public Transform spawnPos;
     public Button attackBtn, ultiBtn;
     public GameObject[] toDisable;
     public Joystick joystick;
+    public FollowCam followCam;
 
 
     // Start is called before the first frame update
     void Awake()
     {
+        
         character = Instantiate(characterPrefab, spawnPos.position, characterPrefab.transform.rotation);
+        followCam.target = character;
         character.GetComponent<PlayerSetup>().enabled = false;
         attackBtn.onClick.AddListener(character.GetComponent<Shooter>().OnShotButtonClicked);
         ultiBtn.onClick.AddListener(character.GetComponent<Shooter>().OnUltiButtonClicked);

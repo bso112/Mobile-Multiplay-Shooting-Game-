@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterStats))]
+[RequireComponent(typeof(AudioSource))]
 public abstract class Shooter : MonoBehaviour
 {
     public GameObject projectilePrefab;
@@ -19,6 +20,8 @@ public abstract class Shooter : MonoBehaviour
     public float shootDelay = 0.2f;
     [Header("발사체를 쏘는 힘")]
     public float shotPower = 1000;
+    //발사 효과음을 트는 오디오소스
+    private AudioSource fx;
     
     protected GameObject currentProjectile;
     protected ObjectPooler pooler;
@@ -27,8 +30,10 @@ public abstract class Shooter : MonoBehaviour
     private float timeStampForAttack;
     private float timeStampForUlti;
 
+
     private void Start()
     {
+        fx = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         ownerStats = GetComponent<CharacterStats>();
     }
@@ -36,15 +41,20 @@ public abstract class Shooter : MonoBehaviour
     //자식에서 Start를 쓰면 부모의 Start가 실행이 안됨..
     protected void BaseStart()
     {
+        fx = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         ownerStats = GetComponent<CharacterStats>();
     }
 
-    //멀티플레이 할 때 이건 동적으로 할당해야한다.
     public void OnShotButtonClicked()
     {
         if(timeStampForAttack <= Time.time)
         {
+            if(fx!=null)
+            {
+                fx.Play();
+                Debug.Log("효과음 실행");
+            }
             StartCoroutine(Shoot(projectilePrefab));
             timeStampForAttack = Time.time + fireCoolDown;
         }

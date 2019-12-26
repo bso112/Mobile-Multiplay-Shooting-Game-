@@ -109,9 +109,10 @@ public class Bomb : Projectile
         { effectObj = Instantiate(effectPrefab, transform.position, Quaternion.identity); }
 
 
+        float delay = effectObj.GetComponent<ParticleSystem>().main.duration;
         if (view.IsMine)
         {
-            effectObj.GetComponent<Effect>().Photon_Destroy();
+            effectObj.GetComponent<Effect>().Photon_Destroy(delay);
             //오브젝트 파괴
             PhotonNetwork.Destroy(this.gameObject);
             
@@ -120,7 +121,7 @@ public class Bomb : Projectile
         //오프라인 테스트용 코드
         if (!PhotonNetwork.IsConnectedAndReady)
         {
-            effectObj.GetComponent<Effect>().Delayed_Destroy();
+            effectObj.GetComponent<Effect>().Delayed_Destroy(delay);
             Destroy(gameObject);
 
         }
