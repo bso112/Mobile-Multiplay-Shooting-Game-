@@ -49,7 +49,10 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 
         foreach (Pool pool in pools)
-        { 
+        {
+            //프리팹의 이름을 풀의 태그로 한다.
+            pool.tag = pool.prefab.name;
+
             //각각의 pool을 pools에서 옮길 큐. 오브젝트 풀 하나는 Queue<GameObject>로 표현된다. 
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
@@ -75,8 +78,8 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
 
     }
 
-
-    public new GameObject Instantiate(string tag, Vector3 position, Quaternion rotation)
+   
+    public GameObject Instantiate(string tag, Vector3 position, Quaternion rotation)
     {
 
         if (!poolDictionary.ContainsKey(tag))
@@ -85,12 +88,24 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             return null;
         }
 
+
+        //미리 준비해둔 오브젝트가 모두 사용되고 있는 상태인 경우, 하나 만든다.
+        if (poolDictionary[tag].Peek().activeSelf)
+        {
+            Debug.Log(tag + "풀의 모든 오브젝트가 사용중임. 따라서 하나 만듦");
+            PhotonNetwork.PrefabPool = new DefaultPool();
+            GameObject obj = PhotonNetwork.Instantiate(tag, position, rotation);
+            PhotonNetwork.PrefabPool = this;
+            return obj;
+        }
+
         GameObject objectToSpawn = poolDictionary[tag].Dequeue();
+
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
         objectToSpawn.SetActive(false);
 
-        //재사용하기 위해 다시 레퍼런스를 해당 풀에 넣는다.
+        //재사용하기 위해 다시 레퍼런스를 해당 풀에 넣는다.  
         poolDictionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;
@@ -99,5 +114,10 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
     public void Destroy(GameObject gameObject)
     {
         gameObject.SetActive(false);
+        Rigidbody rib = gameObject.GetComponent<Rigidbody>();
+        if(rib != null)
+        {
+            rib.velocity = Vector3.zero;
+        }
     }
 }

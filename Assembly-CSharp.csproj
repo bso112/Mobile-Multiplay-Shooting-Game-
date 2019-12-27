@@ -136,6 +136,7 @@
     <Compile Include="Assets\Scripts\Shooters\SpreadingShooter.cs" />
     <Compile Include="Assets\Scripts\Shooters\StraightShooter.cs" />
     <Compile Include="Assets\Scripts\Stats.cs" />
+    <Compile Include="Assets\Scripts\Test\test.cs" />
     <None Include="Assets\External Tools\MegaPack1Lite\RomanCityPack1Lite\README.txt" />
     <None Include="Assets\BrawlArenaKit\Shaders\Projector Multiply.shader" />
     <None Include="Assets\IconGenerator\Readme.txt" />

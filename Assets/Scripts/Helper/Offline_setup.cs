@@ -20,7 +20,6 @@ public class Offline_setup : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        
         character = Instantiate(characterPrefab, spawnPos.position, characterPrefab.transform.rotation);
         followCam.target = character;
         character.GetComponent<PlayerSetup>().enabled = false;

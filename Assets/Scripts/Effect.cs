@@ -8,12 +8,6 @@ using Photon.Pun;
 /// </summary>
 public class Effect : MonoBehaviour
 {
-    private ParticleSystem ps;
-
-    private void Start()
-    {
-        ps = GetComponent<ParticleSystem>();
-    }
     /// <summary>
     /// 파티클의 지속시간만큼 기다리고 파괴한다.
     /// </summary>
@@ -26,7 +20,8 @@ public class Effect : MonoBehaviour
     /// </summary>
     public void Photon_Destroy(float delay)
     {
-        StartCoroutine(Photon_Destroy_corutine(delay));
+        if(gameObject.activeSelf)
+            StartCoroutine(Photon_Destroy_corutine(delay));
     }
     private IEnumerator Photon_Destroy_corutine(float delay)
     {
