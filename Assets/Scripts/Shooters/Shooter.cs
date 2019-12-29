@@ -19,7 +19,7 @@ public abstract class Shooter : MonoBehaviour
     [Header("발사간의 딜레이")]
     public float shootDelay = 0.2f;
     [Header("발사체를 쏘는 힘")]
-    public float shotPower = 1000;
+    public float shotPower;
     //발사 효과음을 트는 오디오소스
     private AudioSource fx;
     
@@ -48,6 +48,13 @@ public abstract class Shooter : MonoBehaviour
 
     public void OnShotButtonClicked()
     {
+
+        if(projectilePrefab == null)
+        {
+            Debug.Log("발사체를 할당하세요!");
+            return;
+        }
+
         if(timeStampForAttack <= Time.time)
         {
             if(fx!=null)
@@ -63,6 +70,14 @@ public abstract class Shooter : MonoBehaviour
 
     public void OnUltiButtonClicked()
     {
+
+        if (specialProjectilePrefab == null)
+        {
+            Debug.Log("궁극기 발사체를 할당하세요!");
+            return;
+        }
+
+
         if (timeStampForUlti <= Time.time)
         {
             Debug.Log("궁극기!");

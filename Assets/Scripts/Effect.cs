@@ -20,6 +20,7 @@ public class Effect : MonoBehaviour
     /// </summary>
     public void Photon_Destroy(float delay)
     {
+        //이미 비활성화 상태라면 코드를 실행하지 않는다(오류남)
         if(gameObject.activeSelf)
             StartCoroutine(Photon_Destroy_corutine(delay));
     }

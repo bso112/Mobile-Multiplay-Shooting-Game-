@@ -93,9 +93,13 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         if (poolDictionary[tag].Peek().activeSelf)
         {
             Debug.Log(tag + "풀의 모든 오브젝트가 사용중임. 따라서 하나 만듦");
+            //리소스 폴더에 tag와 같은 이름을 가진 프리팹이 있어야함.
             PhotonNetwork.PrefabPool = new DefaultPool();
             GameObject obj = PhotonNetwork.Instantiate(tag, position, rotation);
             PhotonNetwork.PrefabPool = this;
+            //오브젝트 풀에 새로 생성한 오브젝트를 넣어 전체 크기를 1 늘림
+            obj.transform.SetParent(GameObject.Find(tag + "Pool").transform);
+            poolDictionary[tag].Enqueue(obj);
             return obj;
         }
 

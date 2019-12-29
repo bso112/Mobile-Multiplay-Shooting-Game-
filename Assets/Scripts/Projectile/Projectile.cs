@@ -24,6 +24,10 @@ public class Projectile : MonoBehaviour
     {
 
         gm = GameManager.Instance;
+        if(gm.localPlayer == null)
+        {
+            Debug.Log("로컬플레이어 널!");
+        }
         owner = gm.localPlayer.transform;
         ownerStats = gm.localPlayer.GetComponent<CharacterStats>();
 

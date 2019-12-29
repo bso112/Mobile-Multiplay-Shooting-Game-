@@ -6,7 +6,8 @@ public class PlayerMotor : MonoBehaviour
 {
     public float speed;
     private Rigidbody rb;
-    public Joystick joyStick;
+    public Joystick moveJoystick;
+    public Joystick attackJoystick;
     public Animator animator;
 
 
@@ -20,15 +21,15 @@ public class PlayerMotor : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (joyStick != null)
+        if (moveJoystick != null)
         {
-            Vector3 direction = (Vector3.forward * joyStick.Vertical + Vector3.right * joyStick.Horizontal).normalized;
+            Vector3 direction = (Vector3.forward * moveJoystick.Vertical + Vector3.right * moveJoystick.Horizontal).normalized;
             rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
-            if(Mathf.Abs(joyStick.Vertical) > 0.1f || Mathf.Abs(joyStick.Horizontal) > 0.1f)
+            if(Mathf.Abs(moveJoystick.Vertical) > 0.1f || Mathf.Abs(moveJoystick.Horizontal) > 0.1f)
             {
                 if(animator != null)
                 {
-                    animator.SetFloat("Speed", (Mathf.Abs(joyStick.Vertical) + Mathf.Abs(joyStick.Horizontal))/2 );
+                    animator.SetFloat("Speed", (Mathf.Abs(moveJoystick.Vertical) + Mathf.Abs(moveJoystick.Horizontal))/2 );
                 }
             }
             else

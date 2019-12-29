@@ -14,15 +14,24 @@ public class Bullet : Projectile
     private bool isInitialized;
 
 
-
+    //처음 한번
     private new void Start()
     {
         isConnectedAndReady = PhotonNetwork.IsConnectedAndReady;
         base.Start();
 
-        //bullet이 활성화 되면 얘도 동시에 활성화 되기 때문에 OnEnable에서 안해도 됨.
         projectileParticle = PhotonNetwork.Instantiate(projectileParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
         projectileParticle.transform.parent = transform;
+
+        if (muzzleParticle)
+        {
+            muzzleParticle = PhotonNetwork.Instantiate(muzzleParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
+            Effect effect = muzzleParticle.GetComponent<Effect>();
+            if (view.IsMine || !isConnectedAndReady)
+                effect.Photon_Destroy(1.5f);
+        }
+
+        isInitialized = true;
 
 
     }
@@ -35,8 +44,10 @@ public class Bullet : Projectile
             col.enabled = true;
         }
 
+        //오브젝트 풀에 있는 오브젝트가 모두 start를 거친 뒤, 껐다가 킬때마다 실행
         if (isInitialized)
         {
+            projectileParticle = PhotonNetwork.Instantiate(projectileParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
 
             if (muzzleParticle)
             {
@@ -63,18 +74,21 @@ public class Bullet : Projectile
     {
         if (ownerStats == null)
             return;
-        //사거리 벗어나면 사라짐
-        if (Vector3.Distance(owner.position, transform.position) > ownerStats.range.GetValue())
+        //사거리 벗어나면 사라짐 (y축 방향 제외).. 발사체의 크기를 고려해 공격범위로부터 +2 만큼을 최대로 둠.
+        float range = ownerStats.range.GetValue();
+        if (Mathf.Abs(owner.position.x - transform.position.x) > range + 2 || Mathf.Abs(owner.position.z - transform.position.z) > range + 2)
         {
             if (view.IsMine || !isConnectedAndReady)
                 PhotonNetwork.Destroy(gameObject);
-
         }
+
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
+
+        Debug.Log("발사체가 트리거 된 것: " + other.name);
         //같은 발사체끼리 부딪치면 무시
         if (other.gameObject.name == gameObject.name)
         {
@@ -99,6 +113,7 @@ public class Bullet : Projectile
             Effect e_impactParticle = impactParticle.GetComponent<Effect>();
             e_projectileParticle.Photon_Destroy(0f);
             e_impactParticle.Photon_Destroy(5f);
+            PhotonNetwork.Destroy(gameObject);
 
 
         }

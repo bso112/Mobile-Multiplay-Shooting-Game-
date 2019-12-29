@@ -14,8 +14,10 @@ public class PlayerSetup : MonoBehaviour
     private PhotonView photonView;
     private FollowCam followCam;
     private ItemPickup pickup;
+    private Transform canvas;
     [HideInInspector]
     public int Team { get; private set; }
+    
 
 
     private void Awake()
@@ -24,6 +26,7 @@ public class PlayerSetup : MonoBehaviour
         motor = GetComponent<PlayerMotor>();
         shooter = GetComponent<Shooter>();
         followCam = Camera.main.transform.GetComponent<FollowCam>();
+        canvas = GameObject.Find("Canvas").transform;
 
     }
 
@@ -34,10 +37,12 @@ public class PlayerSetup : MonoBehaviour
         if (photonView.IsMine)
         {
             followCam.target = gameObject;
-            Transform canvas = GameObject.Find("Canvas").transform;
-            motor.joyStick = canvas.Find("Movement Joystick").GetComponent<Joystick>();
-            canvas.Find("AttackButton").GetComponent<Button>().onClick.AddListener(shooter.OnShotButtonClicked);
-            canvas.Find("UltiButton").GetComponent<Button>().onClick.AddListener(shooter.OnUltiButtonClicked);
+            motor.moveJoystick = canvas.Find("Movement Joystick").GetComponent<Joystick>();
+            Joystick attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
+            motor.attackJoystick = attackJoystick;
+            attackJoystick.onPointerUp += GetComponent<Shooter>().OnShotButtonClicked;
+
+
         }
         else
         {

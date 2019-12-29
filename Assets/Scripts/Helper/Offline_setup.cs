@@ -13,7 +13,8 @@ public class Offline_setup : MonoBehaviour
     public Transform spawnPos;
     public Button attackBtn, ultiBtn;
     public GameObject[] toDisable;
-    public Joystick joystick;
+    public Joystick moveJoystick;
+    public Joystick attackJoystick;
     public FollowCam followCam;
 
 
@@ -23,9 +24,9 @@ public class Offline_setup : MonoBehaviour
         character = Instantiate(characterPrefab, spawnPos.position, characterPrefab.transform.rotation);
         followCam.target = character;
         character.GetComponent<PlayerSetup>().enabled = false;
-        attackBtn.onClick.AddListener(character.GetComponent<Shooter>().OnShotButtonClicked);
-        ultiBtn.onClick.AddListener(character.GetComponent<Shooter>().OnUltiButtonClicked);
-        character.GetComponent<PlayerMotor>().joyStick = joystick;
+        character.GetComponent<PlayerMotor>().moveJoystick = moveJoystick;
+        character.GetComponent<PlayerMotor>().attackJoystick = attackJoystick;
+        attackJoystick.onPointerUp += character.GetComponent<Shooter>().OnShotButtonClicked;
         foreach(var obj in toDisable)
         {
             obj.SetActive(false);
