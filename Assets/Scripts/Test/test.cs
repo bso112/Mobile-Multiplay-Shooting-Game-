@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-
-    private void OnCollisionEnter(Collision collision)
+    private void Awake()
     {
-        Debug.Log(collision.gameObject.name);
+        transform.parent = null;
     }
 }

@@ -113,7 +113,6 @@
     <Compile Include="Assets\Scripts\FollowCam.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GameResultManager.cs" />
-    <Compile Include="Assets\Scripts\Helper\FindMissingScriptsRecursively.cs" />
     <Compile Include="Assets\Scripts\Helper\GradientHelper.cs" />
     <Compile Include="Assets\Scripts\Helper\MathParabola.cs" />
     <Compile Include="Assets\Scripts\Helper\Offline_setup.cs" />
@@ -137,6 +136,7 @@
     <Compile Include="Assets\Scripts\Shooters\StraightShooter.cs" />
     <Compile Include="Assets\Scripts\Stats.cs" />
     <Compile Include="Assets\Scripts\Test\test.cs" />
+    <Compile Include="Assets\Scripts\Test\Test1.cs" />
     <Compile Include="Assets\Scripts\Test\UIController.cs" />
     <Compile Include="Assets\test2.cs" />
     <None Include="Assets\External Tools\MegaPack1Lite\RomanCityPack1Lite\README.txt" />

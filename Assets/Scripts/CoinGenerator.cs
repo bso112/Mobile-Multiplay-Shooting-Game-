@@ -19,12 +19,16 @@ public class CoinGenerator : MonoBehaviour
         {
             this.enabled = false;
         }
+        else if(!PhotonNetwork.IsConnectedAndReady)
+        {
+            this.enabled = true;
+        }
         ObjectPooler.instance.OnObjectPoolReady += SpawnCoin;
     }
 
     private void Update()
     {
-        if (!Lock && ObjectPooler.instance.IsPoolReady && PhotonNetwork.IsMasterClient)
+        if (!Lock && ObjectPooler.instance.IsPoolReady)
         {
             SpawnCoin();
             Lock = true;
@@ -57,4 +61,6 @@ public class CoinGenerator : MonoBehaviour
             yield return null;
         }
     }
+
+
 }

@@ -21,8 +21,14 @@ public class Effect : MonoBehaviour
     public void Photon_Destroy(float delay)
     {
         //이미 비활성화 상태라면 코드를 실행하지 않는다(오류남)
-        if(gameObject.activeSelf)
+        if(gameObject.activeInHierarchy)
+        {
             StartCoroutine(Photon_Destroy_corutine(delay));
+        }
+        else
+        {
+            Debug.Log("이미 비활성화 상태임!");
+        }
     }
     private IEnumerator Photon_Destroy_corutine(float delay)
     {

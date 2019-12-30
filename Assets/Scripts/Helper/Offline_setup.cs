@@ -11,7 +11,6 @@ public class Offline_setup : MonoBehaviour
     public GameObject characterPrefab;
     private GameObject character;
     public Transform spawnPos;
-    public Button attackBtn, ultiBtn;
     public GameObject[] toDisable;
     public Joystick moveJoystick;
     public Joystick attackJoystick;

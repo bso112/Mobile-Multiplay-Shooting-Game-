@@ -70,7 +70,7 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             }
 
             poolDictionary.Add(pool.tag, objectPool);
-                
+
         }
 
         OnObjectPoolReady?.Invoke();
@@ -78,7 +78,7 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
 
     }
 
-   
+
     public GameObject Instantiate(string tag, Vector3 position, Quaternion rotation)
     {
 
@@ -88,20 +88,6 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
             return null;
         }
 
-
-        //미리 준비해둔 오브젝트가 모두 사용되고 있는 상태인 경우, 하나 만든다.
-        if (poolDictionary[tag].Peek().activeSelf)
-        {
-            Debug.Log(tag + "풀의 모든 오브젝트가 사용중임. 따라서 하나 만듦");
-            //리소스 폴더에 tag와 같은 이름을 가진 프리팹이 있어야함.
-            PhotonNetwork.PrefabPool = new DefaultPool();
-            GameObject obj = PhotonNetwork.Instantiate(tag, position, rotation);
-            PhotonNetwork.PrefabPool = this;
-            //오브젝트 풀에 새로 생성한 오브젝트를 넣어 전체 크기를 1 늘림
-            obj.transform.SetParent(GameObject.Find(tag + "Pool").transform);
-            poolDictionary[tag].Enqueue(obj);
-            return obj;
-        }
 
         GameObject objectToSpawn = poolDictionary[tag].Dequeue();
 
@@ -113,13 +99,15 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
         poolDictionary[tag].Enqueue(objectToSpawn);
 
         return objectToSpawn;
+
+
     }
 
     public void Destroy(GameObject gameObject)
     {
         gameObject.SetActive(false);
         Rigidbody rib = gameObject.GetComponent<Rigidbody>();
-        if(rib != null)
+        if (rib != null)
         {
             rib.velocity = Vector3.zero;
         }

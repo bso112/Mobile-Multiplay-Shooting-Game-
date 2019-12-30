@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 상황에 따라 캐릭터의 상태를 변화시키는 스크립트
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
 
@@ -10,10 +13,12 @@ public class PlayerController : MonoBehaviour
     public PlayerSetup setup;
     MeshRenderer meshRenderer;
     private ScoreManager scoreMgr;
+    
 
     private void Start()
     {
         setup = GetComponent<PlayerSetup>();
+        scoreMgr = ScoreManager.Instance;
     }
 
     //keep track of grass collisions and keep player invisible if still colliding with grass

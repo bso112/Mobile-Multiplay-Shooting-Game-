@@ -8,6 +8,9 @@ public class StraightShooter : Shooter
 
     protected override IEnumerator Shoot(GameObject projectilePrefab)
     {
+        //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
+        yield return new WaitForSeconds(0.1f);
+
         for (int i = 0; i < firePerClick; i++)
         {
             //발사체 스폰

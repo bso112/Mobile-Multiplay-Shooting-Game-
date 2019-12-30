@@ -68,31 +68,8 @@ public class ItemPickup : MonoBehaviour
             scoreMgr.AddScore(setup.Team);
         
 
-        #region
-        ////오직 실제 플레이어의 의사로 코인을 먹을때만 스코어를 올린다.
-        //if (PhotonNetwork.IsMasterClient && view.IsMine)
-        //{
-        //    ScoreManager scoreMgr = ScoreManager.Instance;
-        //    scoreMgr.AddScore(setup.Team);
-        //}
-        //else if (!PhotonNetwork.IsMasterClient && view.IsMine)
-        //{
-        //    view.RPC("OnPickCoin", RpcTarget.MasterClient);
-        //}
-        //else
-        //    return;
-        #endregion
+
 
     }
-    //[PunRPC]
-    //private void OnPickCoin()
-    //{
-    //    //마스터클라이언트 게임 인스턴스에 있는 플레이어의 분신이 실행한다.
-    //    ScoreManager scoreMgr = ScoreManager.Instance;
-    //    if (scoreMgr != null)
-    //    {
-    //        scoreMgr.AddScore(setup.Team);
 
-    //    }
-    //}
 }

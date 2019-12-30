@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+/// <summary>
+/// 총알을 구성하는 이펙트의 제어, 닿은 대상에 대해 데미지 부여하는 스크립트
+/// </summary>
 public class Bullet : Projectile
 {
 
@@ -19,9 +22,6 @@ public class Bullet : Projectile
     {
         isConnectedAndReady = PhotonNetwork.IsConnectedAndReady;
         base.Start();
-
-        projectileParticle = PhotonNetwork.Instantiate(projectileParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
-        projectileParticle.transform.parent = transform;
 
         if (muzzleParticle)
         {
@@ -47,7 +47,6 @@ public class Bullet : Projectile
         //오브젝트 풀에 있는 오브젝트가 모두 start를 거친 뒤, 껐다가 킬때마다 실행
         if (isInitialized)
         {
-            projectileParticle = PhotonNetwork.Instantiate(projectileParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
 
             if (muzzleParticle)
             {
@@ -90,7 +89,7 @@ public class Bullet : Projectile
 
         Debug.Log("발사체가 트리거 된 것: " + other.name);
         //같은 발사체끼리 부딪치면 무시
-        if (other.gameObject.name == gameObject.name)
+        if (other.gameObject.name == gameObject.name || other.tag == "Grass" || other.tag == "Coin")
         {
             return;
         }
@@ -109,9 +108,7 @@ public class Bullet : Projectile
         //이펙트를 하나하나 끈다.
         if (view.IsMine || !isConnectedAndReady)
         {
-            Effect e_projectileParticle = projectileParticle.GetComponent<Effect>();
             Effect e_impactParticle = impactParticle.GetComponent<Effect>();
-            e_projectileParticle.Photon_Destroy(0f);
             e_impactParticle.Photon_Destroy(5f);
             PhotonNetwork.Destroy(gameObject);
 

@@ -80,6 +80,10 @@ public class GameManager : MonoBehaviour
     private float countDownMax = 10;
     private float cached_countDownMax;
 
+    //모든 플레이어가 셋팅되고 게임이 시작되었나?
+    private bool isGameStart;
+
+
     
 
 
@@ -110,6 +114,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+
+
         if (!Lock && ObjectPooler.instance.IsPoolReady)
         {
             InitGame();
@@ -117,6 +123,12 @@ public class GameManager : MonoBehaviour
         }
 
         CurrentGameTime += Time.deltaTime;
+
+        if(CurrentGameTime >= 3.0f && isGameStart == false)
+        {
+            //게임 시작
+            isGameStart = true;
+        }
 
         if (CurrentGameTime >= GameTimeLimit)
         {
@@ -207,8 +219,6 @@ public class GameManager : MonoBehaviour
     {
 
      
-
-
         Debug.Log("initGame");
         //프로필을 셋팅한다. (순서대로 들어가지 않음)
         foreach (GameObject A_Profile in A_TeamProfiles)
@@ -242,7 +252,6 @@ public class GameManager : MonoBehaviour
             ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
 
 
-
             //A팀은 A팀 포지션에서 스폰, B팀은 B팀 포지션에서 스폰.
             if ((int)properties["team"] == 0)
             {
@@ -258,7 +267,6 @@ public class GameManager : MonoBehaviour
                 localPlayer = PhotonNetwork.Instantiate((string)properties["character"], B_spawnPoints[B_index++].position, Quaternion.identity);
                 localPlayer.GetComponent<PlayerSetup>().SetTeamRPC(1);
             }
-
 
 
 

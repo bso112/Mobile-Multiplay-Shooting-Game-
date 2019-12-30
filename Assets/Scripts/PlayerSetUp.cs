@@ -22,6 +22,9 @@ public class PlayerSetup : MonoBehaviour
 
     private void Awake()
     {
+        //부모가 있다면 떼버린다.
+        transform.parent = null;
+
         photonView = GetComponent<PhotonView>();
         motor = GetComponent<PlayerMotor>();
         shooter = GetComponent<Shooter>();
@@ -33,6 +36,8 @@ public class PlayerSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //부모가 있다면 떼버린다.
+        transform.parent = null;
 
         if (photonView.IsMine)
         {

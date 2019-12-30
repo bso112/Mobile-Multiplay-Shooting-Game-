@@ -28,12 +28,15 @@ public class SpreadingShooter : Shooter
 
     protected override IEnumerator Shoot(GameObject projectilePrefab)
     {
+        //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
+        yield return new WaitForSeconds(0.1f);
+
         float angle = -spreadAngle / 2;
 
         for (int i = 0; i < shotPerFire; i++)
         {
             //발사
-            Vector3 bulletAngle = new Vector3(0, shotPos[shotPosCount].eulerAngles.y + angle, 0);
+            Vector3 bulletAngle = new Vector3(0, transform.rotation.eulerAngles.y + angle, 0);
             angle += spreadAngle / shotPerFire;
             //발사체 스폰
             GameObject projectile = Photon.Pun.PhotonNetwork.Instantiate(projectilePrefab.name, shotPos[shotPosCount].position, Quaternion.Euler(bulletAngle));

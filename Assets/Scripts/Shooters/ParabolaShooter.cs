@@ -14,7 +14,9 @@ public class ParabolaShooter : Shooter
 
     protected override IEnumerator Shoot(GameObject projectilePrefab)
     {
-        
+        //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
+        yield return new WaitForSeconds(0.3f);
+
         GameObject projectile;
 
         if (PhotonNetwork.IsConnectedAndReady)
@@ -30,7 +32,7 @@ public class ParabolaShooter : Shooter
         Vector3 dir = target.position - transform.position;
         projectile.GetComponent<Rigidbody>().AddForce(dir.x * shotPower, upPower, dir.z * shotPower);
 
-       
+
         yield return new WaitForSeconds(shootDelay);
 
     }
@@ -41,11 +43,4 @@ public class ParabolaShooter : Shooter
         yield return null;
     }
 
-    private void Update()
-    {
-        //if(Input.GetMouseButtonDown(0))
-        //{
-        //    StartCoroutine(Shoot(projectilePrefab));
-        //}
-    }
 }
