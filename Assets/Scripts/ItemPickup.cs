@@ -51,7 +51,7 @@ public class ItemPickup : MonoBehaviour
         {
             float x = Random.Range(-1f, 1f);
             float z = Random.Range(-1f, 1f);
-            Vector3 randomDir = new Vector3(x, 1, z);
+            Vector3 randomDir = new Vector3(x, 5, z);
             GameObject coin = PhotonNetwork.Instantiate("Coin", transform.position, Quaternion.identity);
             coin.GetComponent<Rigidbody>().AddForce(randomDir * popPower, ForceMode.Impulse);
         }

@@ -31,6 +31,7 @@ ScriptsOnlyBuild:
     - PlayerController
     - PlayerMotor
     - PlayerSetup
+    - RespawnTimerController
     - ScoreManager
     - ScoreTextManager
     - SpreadingShooter
@@ -59,10 +60,8 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
-    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -121,7 +120,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9556}
     - Class: 114
-      Script: {instanceID: 11140}
+      Script: {instanceID: 11142}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -208,15 +207,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9760}
     - Class: 114
-      Script: {instanceID: 9984}
+      Script: {instanceID: 9982}
     - Class: 114
-      Script: {instanceID: 10050}
+      Script: {instanceID: 10048}
     - Class: 114
-      Script: {instanceID: 10106}
+      Script: {instanceID: 10104}
     - Class: 114
-      Script: {instanceID: 10142}
+      Script: {instanceID: 10140}
     - Class: 114
-      Script: {instanceID: 10156}
+      Script: {instanceID: 10154}
     - Class: 114
       Script: {instanceID: 10344}
     - Class: 114
@@ -236,19 +235,21 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10850}
     - Class: 114
-      Script: {instanceID: 11006}
+      Script: {instanceID: 10854}
     - Class: 114
-      Script: {instanceID: 11020}
+      Script: {instanceID: 11008}
     - Class: 114
-      Script: {instanceID: 11128}
+      Script: {instanceID: 11022}
     - Class: 114
-      Script: {instanceID: 11194}
+      Script: {instanceID: 11130}
     - Class: 114
-      Script: {instanceID: 11206}
+      Script: {instanceID: 11196}
     - Class: 114
-      Script: {instanceID: 11296}
+      Script: {instanceID: 11208}
     - Class: 114
-      Script: {instanceID: 11386}
+      Script: {instanceID: 11298}
+    - Class: 114
+      Script: {instanceID: 11388}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -377,23 +378,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9816}
     - Class: 114
-      Script: {instanceID: 9978}
+      Script: {instanceID: 9976}
     - Class: 114
-      Script: {instanceID: 9984}
+      Script: {instanceID: 9982}
+    - Class: 114
+      Script: {instanceID: 10048}
     - Class: 114
       Script: {instanceID: 10050}
     - Class: 114
-      Script: {instanceID: 10052}
+      Script: {instanceID: 10076}
     - Class: 114
-      Script: {instanceID: 10078}
+      Script: {instanceID: 10098}
     - Class: 114
-      Script: {instanceID: 10100}
+      Script: {instanceID: 10104}
     - Class: 114
-      Script: {instanceID: 10106}
+      Script: {instanceID: 10124}
     - Class: 114
-      Script: {instanceID: 10126}
-    - Class: 114
-      Script: {instanceID: 10142}
+      Script: {instanceID: 10140}
     - Class: 114
       Script: {instanceID: 10242}
     - Class: 114
@@ -433,23 +434,23 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10850}
     - Class: 114
-      Script: {instanceID: 11020}
-    - Class: 114
       Script: {instanceID: 11022}
     - Class: 114
-      Script: {instanceID: 11128}
+      Script: {instanceID: 11024}
     - Class: 114
-      Script: {instanceID: 11166}
+      Script: {instanceID: 11130}
     - Class: 114
-      Script: {instanceID: 11206}
+      Script: {instanceID: 11168}
     - Class: 114
-      Script: {instanceID: 11296}
+      Script: {instanceID: 11208}
     - Class: 114
-      Script: {instanceID: 11378}
+      Script: {instanceID: 11298}
     - Class: 114
-      Script: {instanceID: 11386}
+      Script: {instanceID: 11380}
     - Class: 114
-      Script: {instanceID: 11392}
+      Script: {instanceID: 11388}
+    - Class: 114
+      Script: {instanceID: 11394}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1189,7 +1190,7 @@ ScriptsOnlyBuild:
     className: SignalAsset
   - hash:
       serializedVersion: 2
-      Hash: 84f407fe7b980f831283ad720eafe715
+      Hash: d2bf12a31eb4c4f1f41337b66d282b73
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Offline_setup
@@ -1565,6 +1566,12 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
+  - hash:
+      serializedVersion: 2
+      Hash: ffb7f57d61d46ff43d2afc903afbc25c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Test1
   - hash:
       serializedVersion: 2
       Hash: ce669872a2be11bc686ea22961d8a3bb
@@ -2335,6 +2342,12 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
+      Hash: 9831af97c5638802b770b0bea7154a38
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: RespawnTimerController
+  - hash:
+      serializedVersion: 2
       Hash: a909505c7e9870f1ee552a40f203397a
     assemblyName: Assembly-CSharp-firstpass.dll
     namespaceName: UnityStandardAssets.Vehicles.Car
@@ -2569,7 +2582,7 @@ ScriptsOnlyBuild:
     className: MoveByKeys
   - hash:
       serializedVersion: 2
-      Hash: 50a994e608cbc43321b74a973f2b0bf6
+      Hash: 725c8470510589ff012e11efc99efe99
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Bullet
@@ -2801,12 +2814,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp-firstpass.dll
     namespaceName: UnityStandardAssets.Utility
     className: AutoMobileShaderSwitch
-  - hash:
-      serializedVersion: 2
-      Hash: ffb7f57d61d46ff43d2afc903afbc25c
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Test1
   platform: 19
   scenePathNames:
   - Assets/Scenes/Lobby.unity

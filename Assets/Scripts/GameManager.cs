@@ -84,11 +84,25 @@ public class GameManager : MonoBehaviour
     private bool isGameStart;
 
 
-    
+    //캐릭터 스폰 관련 필드
+    private ExitGames.Client.Photon.Hashtable localProperties;
+    private int team;
+    private string character;
+    private int spawnIndex;
+
+
+
+
 
 
     private void Start()
     {
+
+        localProperties = PhotonNetwork.LocalPlayer.CustomProperties;
+        team = (int)localProperties["team"];
+        character = (string)localProperties["character"];
+        spawnIndex = (int)localProperties["spawnIndex"];
+
         photonView = GetComponent<PhotonView>();
         scoreMgr = ScoreManager.Instance;
 
@@ -102,13 +116,13 @@ public class GameManager : MonoBehaviour
         cached_countDownMax = countDownMax;
 
         //오프라인 테스트용 코드
-        if(!PhotonNetwork.IsConnectedAndReady)
+        if (!PhotonNetwork.IsConnectedAndReady)
         {
             GameObject character = GameObject.FindWithTag("Player");
             localPlayer = character;
         }
 
-      
+
 
     }
 
@@ -124,7 +138,7 @@ public class GameManager : MonoBehaviour
 
         CurrentGameTime += Time.deltaTime;
 
-        if(CurrentGameTime >= 3.0f && isGameStart == false)
+        if (CurrentGameTime >= 3.0f && isGameStart == false)
         {
             //게임 시작
             isGameStart = true;
@@ -136,7 +150,7 @@ public class GameManager : MonoBehaviour
         }
 
         //테스트용으로 바로 게임클리어하게 하는 장치
-        if(Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             isGameEnd = true;
         }
@@ -190,7 +204,7 @@ public class GameManager : MonoBehaviour
             {
                 winner = 0;
             }
-            else 
+            else
                 winner = 1;
 
             Debug.Log("카운트다운 0");
@@ -214,11 +228,11 @@ public class GameManager : MonoBehaviour
 
     }
 
-    
+
     private void InitGame()
     {
 
-     
+
         Debug.Log("initGame");
         //프로필을 셋팅한다. (순서대로 들어가지 않음)
         foreach (GameObject A_Profile in A_TeamProfiles)
@@ -242,29 +256,20 @@ public class GameManager : MonoBehaviour
         if (PhotonNetwork.IsConnectedAndReady)
         {
 
-            photonView = GetComponent<PhotonView>();
-
-            //캐릭터 스폰
-            int A_index = 0;
-            int B_index = 0;
-
-
-            ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
-
 
             //A팀은 A팀 포지션에서 스폰, B팀은 B팀 포지션에서 스폰.
-            if ((int)properties["team"] == 0)
+            if (team == 0)
             {
-                A_index = Mathf.Clamp(A_index, 0, A_spawnPoints.Length);
-                localPlayer = PhotonNetwork.Instantiate((string)properties["character"], A_spawnPoints[A_index++].position, Quaternion.identity);
+                spawnIndex = Mathf.Clamp(spawnIndex, 0, A_spawnPoints.Length);
+                localPlayer = PhotonNetwork.Instantiate(character, A_spawnPoints[spawnIndex].position, Quaternion.identity);
                 //각 플레이어마다 팀을 정해준다.
                 localPlayer.GetComponent<PlayerSetup>().SetTeamRPC(0);
 
             }
             else
             {
-                B_index = Mathf.Clamp(B_index, 0, B_spawnPoints.Length);
-                localPlayer = PhotonNetwork.Instantiate((string)properties["character"], B_spawnPoints[B_index++].position, Quaternion.identity);
+                spawnIndex = Mathf.Clamp(spawnIndex, 0, B_spawnPoints.Length);
+                localPlayer = PhotonNetwork.Instantiate(character, B_spawnPoints[spawnIndex].position, Quaternion.identity);
                 localPlayer.GetComponent<PlayerSetup>().SetTeamRPC(1);
             }
 
@@ -273,7 +278,8 @@ public class GameManager : MonoBehaviour
 
             //매치테이블 셋팅
             StartCoroutine(SetProfileCorutine());
-
+            //스폰 포지션 증가 및 동기화
+            
 
         }
         else
@@ -287,7 +293,6 @@ public class GameManager : MonoBehaviour
 
 
     }
-
 
 
 
@@ -317,6 +322,7 @@ public class GameManager : MonoBehaviour
             {
                 A_TeamProfileIndex = Mathf.Clamp(A_TeamProfileIndex, 0, A_TeamProfiles.Length);
                 A_TeamNames[A_TeamProfileIndex].text = player.NickName;
+                Debug.Log("받아온 캐릭터이름: " + (string)properties["character"]);
                 A_TeamPortraits[A_TeamProfileIndex++].sprite = portraitDic[(string)properties["character"]];
 
 
@@ -326,12 +332,18 @@ public class GameManager : MonoBehaviour
                 B_TeamProfileIndex = Mathf.Clamp(B_TeamProfileIndex, 0, B_TeamProfiles.Length);
                 B_TeamNames[B_TeamProfileIndex].text = player.NickName;
                 Debug.Log(player.NickName + "의 캐릭터: " + (string)properties["character"]);
+                Debug.Log("받아온 캐릭터이름: " + (string)properties["character"]);
                 B_TeamPortraits[B_TeamProfileIndex++].sprite = portraitDic[(string)properties["character"]];
             }
         }
 
     }
 
+    public void Respawn()
+    {
+        Vector3 spawnPos = team == 0 ? A_spawnPoints[spawnIndex].position : B_spawnPoints[spawnIndex].position;
+        PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
+    }
 
 }
 

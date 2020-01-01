@@ -118,7 +118,6 @@
     <Compile Include="Assets\Scripts\Helper\Offline_setup.cs" />
     <Compile Include="Assets\Scripts\Helper\ParabolaController.cs" />
     <Compile Include="Assets\Scripts\Helper\Singleton.cs" />
-    <Compile Include="Assets\Scripts\Indecator.cs" />
     <Compile Include="Assets\Scripts\ItemPickup.cs" />
     <Compile Include="Assets\Scripts\MasterClientAgent.cs" />
     <Compile Include="Assets\Scripts\NetworkManager.cs" />
@@ -129,7 +128,6 @@
     <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
     <Compile Include="Assets\Scripts\Projectile\Projectile.cs" />
     <Compile Include="Assets\Scripts\ScoreManager.cs" />
-    <Compile Include="Assets\Scripts\ScoreTextManager.cs" />
     <Compile Include="Assets\Scripts\Shooters\ParabolaShooter.cs" />
     <Compile Include="Assets\Scripts\Shooters\Shooter.cs" />
     <Compile Include="Assets\Scripts\Shooters\SpreadingShooter.cs" />
@@ -138,6 +136,9 @@
     <Compile Include="Assets\Scripts\Test\test.cs" />
     <Compile Include="Assets\Scripts\Test\Test1.cs" />
     <Compile Include="Assets\Scripts\Test\UIController.cs" />
+    <Compile Include="Assets\Scripts\UI\Indecator.cs" />
+    <Compile Include="Assets\Scripts\UI\RespawnTimerController.cs" />
+    <Compile Include="Assets\Scripts\UI\ScoreTextManager.cs" />
     <Compile Include="Assets\test2.cs" />
     <None Include="Assets\External Tools\MegaPack1Lite\RomanCityPack1Lite\README.txt" />
     <None Include="Assets\BrawlArenaKit\Shaders\Projector Multiply.shader" />

@@ -9,12 +9,16 @@ using Photon.Pun;
 public class Bullet : Projectile
 {
 
+    //부딪쳤을때 나타나는 파티클
     public GameObject impactParticle;//played on collision
-    public GameObject projectileParticle;//bullet particle
+    //발사시 나타나는 파티클
     public GameObject muzzleParticle;
     public Vector3 impactNormal;
+    [Header("한 발 피격당 궁극기가 차는 정도(max = 1)")]
+    public float ultiCharge;
     private bool isConnectedAndReady;
     private bool isInitialized;
+
 
 
     //처음 한번
@@ -94,11 +98,14 @@ public class Bullet : Projectile
             return;
         }
 
-        //부딪힌게 캐릭터면 데미지를 준다.
+        //부딪힌게 상대 캐릭터면 데미지를 준다.
         CharacterStats target = other.gameObject.GetComponent<CharacterStats>();
         if (target != null && ownerStats != null && target != ownerStats)
         {
+            //상대 캐릭터의 공격력만큼 데미지 준다.
             target.TakeDamageRPC(ownerStats.attack.GetValue());
+            //캐릭터의 궁극기 게이지를 채운다.
+            owner.GetComponent<PlayerController>().AddUltiCharge(ultiCharge);
         }
 
         //터질때 나타나는 이펙트

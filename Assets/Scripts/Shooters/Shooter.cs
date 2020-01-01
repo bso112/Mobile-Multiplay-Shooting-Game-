@@ -20,6 +20,7 @@ public abstract class Shooter : MonoBehaviour
     public float shootDelay = 0.2f;
     [Header("발사체를 쏘는 힘")]
     public float shotPower;
+
     //발사 효과음을 트는 오디오소스
     private AudioSource fx;
     

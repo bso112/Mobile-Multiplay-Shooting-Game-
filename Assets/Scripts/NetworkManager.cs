@@ -54,6 +54,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     [Range(0, 1)]
     private int team;
+    //게임신에서 스폰할 인덱스
+    private int spawnIndex;
 
 
 
@@ -88,7 +90,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         ShowOnlyOnePanel(gameOptionPanel.name);
     }
 
-
+    //로컬플레이어만 실행
     public override void OnJoinedRoom()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -98,7 +100,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
         //팀은 마스터클라이언트(방장)에서만 관리한다.
         if(PhotonNetwork.IsMasterClient)
+        {
+            //SetCustomProperties는 동기화가 된다.
             PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex++ } });
+        }
 
         //플레이어의 캐릭터 선택은 로컬에서 관리한다.
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "character", currentPlayerPrefab } });
@@ -108,6 +114,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     }
 
+    //마스터 클라이언트에서만 실행
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         //방장에서만 실행
@@ -120,6 +127,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         }
 
         newPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
+        newPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex } });
+
+        // team        0   1   0   1   0   1   0   1
+        // spawnIndex  0   0   1   1   2   2   3   3
+        if (team == 1)
+            spawnIndex++;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
         {

@@ -15,7 +15,7 @@ public class Offline_setup : MonoBehaviour
     public Joystick moveJoystick;
     public Joystick attackJoystick;
     public FollowCam followCam;
-
+    public Button ultiBtn;
 
     // Start is called before the first frame update
     void Awake()
@@ -26,7 +26,8 @@ public class Offline_setup : MonoBehaviour
         character.GetComponent<PlayerMotor>().moveJoystick = moveJoystick;
         character.GetComponent<PlayerMotor>().attackJoystick = attackJoystick;
         attackJoystick.onPointerUp += character.GetComponent<Shooter>().OnShotButtonClicked;
-        foreach(var obj in toDisable)
+        ultiBtn.onClick.AddListener(GetComponent<Shooter>().OnUltiButtonClicked);
+        foreach (var obj in toDisable)
         {
             obj.SetActive(false);
         }

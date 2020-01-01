@@ -8,14 +8,15 @@ using TMPro;
 public class PlayerSetup : MonoBehaviour
 {
 
-    public TextMeshProUGUI nameText;
     private PlayerMotor motor;
     private Shooter shooter;
     private PhotonView photonView;
     private FollowCam followCam;
     private ItemPickup pickup;
     private Transform canvas;
-    [HideInInspector]
+    public TextMeshProUGUI nameText;
+    [HideInInspector] private Button ultiBtn;
+
     public int Team { get; private set; }
     
 
@@ -28,9 +29,6 @@ public class PlayerSetup : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         motor = GetComponent<PlayerMotor>();
         shooter = GetComponent<Shooter>();
-        followCam = Camera.main.transform.GetComponent<FollowCam>();
-        canvas = GameObject.Find("Canvas").transform;
-
     }
 
     // Start is called before the first frame update
@@ -41,11 +39,16 @@ public class PlayerSetup : MonoBehaviour
 
         if (photonView.IsMine)
         {
+            canvas = GameObject.Find("Canvas").transform;
+            followCam = Camera.main.transform.GetComponent<FollowCam>();
             followCam.target = gameObject;
             motor.moveJoystick = canvas.Find("Movement Joystick").GetComponent<Joystick>();
             Joystick attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
             motor.attackJoystick = attackJoystick;
             attackJoystick.onPointerUp += GetComponent<Shooter>().OnShotButtonClicked;
+            ultiBtn = canvas.Find("UltimateButton").GetComponent<Button>();
+            ultiBtn.onClick.AddListener(GetComponent<Shooter>().OnUltiButtonClicked);
+            
 
 
         }

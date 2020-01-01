@@ -23,7 +23,11 @@ public class CharacterStats : MonoBehaviour
 
     private PhotonView photonView;
 
+    /// <summary>
+    /// 플레이어가 죽을 때 일어나는 이벤트. 주의! Instantiate하는 리스너를 붙이지 마시오
+    /// </summary>
     public System.Action onPlayerDie;
+
 
     private void OnEnable()
     {
@@ -62,14 +66,9 @@ public class CharacterStats : MonoBehaviour
 
     protected virtual void Die()
     {
-        Debug.Log(gameObject.name + "이 죽었습니다!");
-        photonView.TransferOwnership(PhotonNetwork.MasterClient);
-        if (photonView.Owner == PhotonNetwork.MasterClient)
-        {
-            PhotonNetwork.Destroy(gameObject);
-        }
-        else
-            Debug.Log("마스터클라이언트만 파괴할 수 있습니다!");
         onPlayerDie?.Invoke();
+        if (photonView.IsMine)
+            PhotonNetwork.Destroy(gameObject);
+       
     }
 }

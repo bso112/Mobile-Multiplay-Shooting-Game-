@@ -74,6 +74,8 @@ public class SpreadingShooter : Shooter
             yield return null;
         }
         timeCounter = 0;
+
+        GetComponent<PlayerController>().InitUltiCharge();
     }
 
 
