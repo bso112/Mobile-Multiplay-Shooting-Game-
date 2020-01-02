@@ -57,6 +57,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //게임신에서 스폰할 인덱스
     private int spawnIndex;
 
+    /// <summary>
+    /// 매치메이킹 대기시간
+    /// </summary>
+    private float waitTime;
+    [Header("매치메이킹 최대 대기시간")]
+    public float maxWait;
+
 
 
     // Start is called before the first frame update
@@ -65,7 +72,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         ShowOnlyOnePanel(loginPanel.name);
         currentPlayerPrefab = "Soldier";
         characterPreview.currentModel = defaultCharacterModel;
-        
+
     }
 
     // Update is called once per frame
@@ -98,13 +105,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinedRoom");
         playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + PhotonNetwork.CurrentRoom.MaxPlayers;
 
-        //팀은 마스터클라이언트(방장)에서만 관리한다.
-        if(PhotonNetwork.IsMasterClient)
-        {
-            //SetCustomProperties는 동기화가 된다.
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
-            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex++ } });
-        }
 
         //플레이어의 캐릭터 선택은 로컬에서 관리한다.
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "character", currentPlayerPrefab } });
@@ -134,10 +134,14 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         if (team == 1)
             spawnIndex++;
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+        waitTime += Time.deltaTime;
+
+        //모든 플레이어가 방에 들어오거나, 매치메이킹 최대시간이 초과하면 게임실행
+        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers || waitTime >= maxWait)
         {
             PhotonNetwork.LoadLevel("GameScene");
         }
+        
 
 
 

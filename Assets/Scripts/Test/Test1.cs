@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test1 : MonoBehaviour
+public class Test1 : test
 {
-    public int a = 1;
+    private void Start()
+    {
+        Debug.Log("test1");
+    }
 
 }

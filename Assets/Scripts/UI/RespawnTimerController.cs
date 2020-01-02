@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class RespawnTimerController : MonoBehaviour
 {   
@@ -22,7 +23,7 @@ public class RespawnTimerController : MonoBehaviour
         Fill.fillAmount = currentTime / maxTime;
         if(Fill.fillAmount >= 1)
         {
-            GameManager.Instance.Respawn();
+            GameManager.Instance.Respawn(PhotonNetwork.LocalPlayer.ActorNumber);
             currentTime = 0f;
             Fill.fillAmount = 0;
             gameObject.SetActive(false);

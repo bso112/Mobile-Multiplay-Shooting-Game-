@@ -16,8 +16,10 @@ public class PlayerSetup : MonoBehaviour
     private Transform canvas;
     public TextMeshProUGUI nameText;
     [HideInInspector] private Button ultiBtn;
-
     public int Team { get; private set; }
+
+    //AI인가?
+    protected bool isAI;
     
 
 
@@ -34,6 +36,8 @@ public class PlayerSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (isAI)
+            return;
         //부모가 있다면 떼버린다.
         transform.parent = null;
 

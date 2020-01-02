@@ -94,6 +94,8 @@
     <Compile Include="Assets\IconGenerator\IconGenerator.cs" />
     <Compile Include="Assets\IconGenerator\IconGeneratorUIExample.cs" />
     <Compile Include="Assets\IconGenerator\TextureScale.cs" />
+    <Compile Include="Assets\Scripts\AI\AIController.cs" />
+    <Compile Include="Assets\Scripts\AI\AISetup.cs" />
     <Compile Include="Assets\Scripts\Bush.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterCombat.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterInfo.cs" />

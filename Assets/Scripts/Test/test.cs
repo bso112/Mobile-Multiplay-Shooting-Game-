@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-    private void Awake()
+    private void Start()
     {
-        transform.parent = null;
+        Debug.Log("test");
     }
 }
