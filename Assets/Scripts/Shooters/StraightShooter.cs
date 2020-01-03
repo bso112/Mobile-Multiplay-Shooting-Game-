@@ -40,6 +40,6 @@ public class StraightShooter : Shooter
         }
 
         //궁극기 게이지 초기화
-        GetComponent<PlayerController>().InitUltiCharge();
+        characterCon.InitUltiCharge();
     }
 }

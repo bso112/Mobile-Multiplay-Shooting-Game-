@@ -7,7 +7,7 @@ using Photon.Pun;
 /// <summary>
 /// 상황에 따라 캐릭터의 상태를 변화시키는 스크립트
 /// </summary>
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ICharacterController
 {
 
     //풀어 들어갈때만 숨기고 나올때만 원래대로 하려고 쓰는 카운트 변수
@@ -22,15 +22,22 @@ public class PlayerController : MonoBehaviour
     private Animator ultiAnim;
     private Image ultiFill;
     private PhotonView view;
+    //AI냐?
+    protected bool isAI;
 
 
 
     private void Start()
     {   
+        
        
         setup = GetComponent<PlayerSetup>();
         scoreMgr = ScoreManager.Instance;
         view = GetComponent<PhotonView>();
+
+        if (isAI)
+            return;
+
         if (view != null)
         {
             if (view.IsMine)
@@ -88,75 +95,76 @@ public class PlayerController : MonoBehaviour
         ultiAnim.enabled = false;
     }
 
-    //keep track of grass collisions and keep player invisible if still colliding with grass
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.tag == "Grass")
-        {
-            grasscount++;
-            meshRenderer = col.transform.GetChild(0).GetComponent<MeshRenderer>();
+    ////keep track of grass collisions and keep player invisible if still colliding with grass
+    //void OnTriggerEnter(Collider col)
+    //{
+    //    if (col.tag == "Grass")
+    //    {
+    //        grasscount++;
+    //        meshRenderer = col.transform.GetChild(0).GetComponent<MeshRenderer>();
 
-            if (setup != null)
-            {
-                if (scoreMgr != null && scoreMgr.HomeTeam == setup.Team)
-                {
-                    meshRenderer.material.color = ModifyAlpha(meshRenderer, 0.3f);
-                }
-            }
+            
+    //        if (setup != null)
+    //        {
+    //            if (scoreMgr != null && scoreMgr.HomeTeam == setup.Team)
+    //            {
+    //                meshRenderer.material.color = ModifyAlpha(meshRenderer, 0.3f);
+    //            }
+    //        }
 
-            //오프라인 테스트용 코드
-            if (!Photon.Pun.PhotonNetwork.IsConnectedAndReady)
-            {
-                meshRenderer.material.color = ModifyAlpha(meshRenderer, 0.3f);
-            }
+    //        //오프라인 테스트용 코드
+    //        if (!Photon.Pun.PhotonNetwork.IsConnectedAndReady)
+    //        {
+    //            meshRenderer.material.color = ModifyAlpha(meshRenderer, 0.3f);
+    //        }
 
-            //풀숲에 들어갈때 UI 가리기
-            if (grasscount == 1)
-            {
-                transform.Find("PlayerUI").gameObject.SetActive(false);
-            }
+    //        //풀숲에 들어갈때 UI 가리기
+    //        if (grasscount == 1)
+    //        {
+    //            transform.Find("PlayerUI").gameObject.SetActive(false);
+    //        }
 
-        }
-    }
+    //    }
+    //}
 
-    //make player invisible when not colliding with grass
-    void OnTriggerExit(Collider col)
-    {
-        if (col.tag == "Grass")
-        {
-            grasscount--;
-            meshRenderer = col.transform.GetChild(0).GetComponent<MeshRenderer>();
+    ////make player invisible when not colliding with grass
+    //void OnTriggerExit(Collider col)
+    //{
+    //    if (col.tag == "Grass")
+    //    {
+    //        grasscount--;
+    //        meshRenderer = col.transform.GetChild(0).GetComponent<MeshRenderer>();
 
-            if (setup != null)
-            {
-                if (scoreMgr != null && scoreMgr.HomeTeam == setup.Team)
-                {
-                    meshRenderer.material.color = ModifyAlpha(meshRenderer, 1f);
-                }
-            }
+    //        if (setup != null)
+    //        {
+    //            if (scoreMgr != null && scoreMgr.HomeTeam == setup.Team)
+    //            {
+    //                meshRenderer.material.color = ModifyAlpha(meshRenderer, 1f);
+    //            }
+    //        }
 
-            //오프라인 테스트용 코드
-            if (!Photon.Pun.PhotonNetwork.IsConnectedAndReady)
-            {
-                meshRenderer.material.color = ModifyAlpha(meshRenderer, 1f);
-            }
+    //        //오프라인 테스트용 코드
+    //        if (!Photon.Pun.PhotonNetwork.IsConnectedAndReady)
+    //        {
+    //            meshRenderer.material.color = ModifyAlpha(meshRenderer, 1f);
+    //        }
 
-            //풀숲을 나올때 UI 표시하기
-            if (grasscount == 0)
-            {
-                transform.Find("PlayerUI").gameObject.SetActive(true);
-            }
+    //        //풀숲을 나올때 UI 표시하기
+    //        if (grasscount == 0)
+    //        {
+    //            transform.Find("PlayerUI").gameObject.SetActive(true);
+    //        }
 
-        }
-    }
+    //    }
+    //}
 
-    Color ModifyAlpha(Renderer renderer, float alpha)
-    {
-        Color newColor = renderer.material.color;
-        newColor.a = alpha;
-        return newColor;
+    //Color ModifyAlpha(Renderer renderer, float alpha)
+    //{
+    //    Color newColor = renderer.material.color;
+    //    newColor.a = alpha;
+    //    return newColor;
 
-    }
+    //}
 
 
 

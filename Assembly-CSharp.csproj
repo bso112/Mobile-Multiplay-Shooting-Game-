@@ -101,9 +101,11 @@
     <Compile Include="Assets\Scripts\Character\CharacterInfo.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterListController.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterPreview.cs" />
+    <Compile Include="Assets\Scripts\Character\CharacterSetup.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterSlot.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStats.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStatsUI.cs" />
+    <Compile Include="Assets\Scripts\Character\ICharacterController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerMotor.cs" />
     <Compile Include="Assets\Scripts\Coin.cs" />

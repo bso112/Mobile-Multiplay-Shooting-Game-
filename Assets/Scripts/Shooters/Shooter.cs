@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterStats))]
-[RequireComponent(typeof(AudioSource))]
 public abstract class Shooter : MonoBehaviour
 {
     public GameObject projectilePrefab;
@@ -31,21 +30,19 @@ public abstract class Shooter : MonoBehaviour
     private float timeStampForAttack;
     private float timeStampForUlti;
 
+    /// <summary>
+    /// 궁극기 사용후 게이지 초기화를 위해 사용
+    /// </summary>
+    protected ICharacterController characterCon;
 
     private void Start()
     {
         fx = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         ownerStats = GetComponent<CharacterStats>();
+        characterCon = GetComponent<ICharacterController>();
     }
 
-    //자식에서 Start를 쓰면 부모의 Start가 실행이 안됨..
-    protected void BaseStart()
-    {
-        fx = GetComponent<AudioSource>();
-        pooler = ObjectPooler.instance;
-        ownerStats = GetComponent<CharacterStats>();
-    }
 
     public void OnShotButtonClicked()
     {

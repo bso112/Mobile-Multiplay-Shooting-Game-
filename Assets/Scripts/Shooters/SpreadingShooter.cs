@@ -20,12 +20,6 @@ public class SpreadingShooter : Shooter
     private float timeStamp;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        BaseStart();
-    }
-
     protected override IEnumerator Shoot(GameObject projectilePrefab)
     {
         //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
@@ -75,7 +69,7 @@ public class SpreadingShooter : Shooter
         }
         timeCounter = 0;
 
-        GetComponent<PlayerController>().InitUltiCharge();
+        characterCon.InitUltiCharge();
     }
 
 

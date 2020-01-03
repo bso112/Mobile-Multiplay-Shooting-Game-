@@ -40,7 +40,7 @@ public class ParabolaShooter : Shooter
     protected override IEnumerator Ultimate(GameObject _projectilePrefab)
     {
         StartCoroutine(Shoot(_projectilePrefab));
-        GetComponent<PlayerController>().InitUltiCharge();
+        characterCon.InitUltiCharge();
         yield return null;
     }
 

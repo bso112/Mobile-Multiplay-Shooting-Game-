@@ -2,16 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
+using TMPro;
 
-public class AISetup : PlayerSetup
+public class AISetup : CharacterSetup
 {
 
-    private void Awake()
-    {   
-        //부모의 start메소드 실행금지. AI입니다.
-        isAI = true;
+    private PhotonView photonView;
+    public TextMeshProUGUI nameText;
+
+    private void Start()
+    {
+        transform.parent = null;
+        SetPlayerName();
     }
 
+    private void SetPlayerName()
+    {
+        nameText.text = "AI";
+    }
 
+    public override void SetTeamRPC(int _team)
+    {
+        if (photonView == null)
+            Debug.LogError("포톤 뷰가 없습니다");
+        photonView.RPC("SetTeam", RpcTarget.AllBuffered, _team);
+        Debug.Log(PhotonNetwork.LocalPlayer.NickName + "의 팀은" + Team);
+    }
+
+    [PunRPC]
+    private void SetTeam(int _team)
+    {
+        Team = _team;
+    }
 
 }

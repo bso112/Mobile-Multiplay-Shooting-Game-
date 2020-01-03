@@ -52,6 +52,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [Header("CharacterStatsPanel")]
     public GameObject characterStatsPanel;
 
+    [Header("Room capacity of player")]
+    [SerializeField] private byte maxPlayerCount;
     [Range(0, 1)]
     private int team;
     //게임신에서 스폰할 인덱스
@@ -65,6 +67,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public float maxWait;
 
 
+    //룸에 모든 인원이 모였나?
+    private bool isRoomFull;
+    //로컬 플레이어가 방에 들어왔나?
+    private bool isLocalEnteredRoom;
+    //최대 대기시간이 초과되었나?
+    private bool isWaitMax;
 
     // Start is called before the first frame update
     void Start()
@@ -79,6 +87,29 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     void Update()
     {
         connectionStatusText.text = PhotonNetwork.NetworkClientState.ToString();
+
+        if (isLocalEnteredRoom)
+        {
+
+            waitTime += Time.deltaTime;
+
+            if (waitTime > maxWait && !isWaitMax)
+            {
+                //최대 대기시간이 지나면 그냥 게임실행
+                PhotonNetwork.LoadLevel("GameScene");
+                isWaitMax = true;
+            }
+
+            //테스트용 코드
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                waitTime = maxWait;
+            }
+        }
+
+
+        
+
     }
 
     public void SetCharacter(CharacterInfo _characterInfo)
@@ -105,9 +136,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinedRoom");
         playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + PhotonNetwork.CurrentRoom.MaxPlayers;
 
-
-        //플레이어의 캐릭터 선택은 로컬에서 관리한다.
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "character", currentPlayerPrefab } });
+
+        isLocalEnteredRoom = true;
 
         ShowOnlyOnePanel(loadingPanel.name);
 
@@ -117,32 +148,25 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //마스터 클라이언트에서만 실행
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //방장에서만 실행
-        //Debug.Log("OnPlayerEnteredRoom");
+
         playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + PhotonNetwork.CurrentRoom.MaxPlayers;
 
-        if (team > 1)
-        {
-            team = 0;
-        }
+        isRoomFull = PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers;
 
-        newPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
-        newPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex } });
+    }
 
-        // team        0   1   0   1   0   1   0   1
-        // spawnIndex  0   0   1   1   2   2   3   3
-        if (team == 1)
-            spawnIndex++;
 
-        waitTime += Time.deltaTime;
 
-        //모든 플레이어가 방에 들어오거나, 매치메이킹 최대시간이 초과하면 게임실행
-        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers || waitTime >= maxWait)
+    public override void OnPlayerPropertiesUpdate(Player target, Hashtable changedProps)
+    {
+        Debug.Log(target.NickName + "의 커스텀 프로퍼티가 " + changedProps + "으로 업데이트 되었습니다.");
+
+
+        //모든 플레이어가 방에 들어왔고, 커스텀프로퍼티가 모두 셋팅되었다면 게임실행
+        if (isRoomFull && changedProps["character"] != null)
         {
             PhotonNetwork.LoadLevel("GameScene");
         }
-        
-
 
 
     }
@@ -157,7 +181,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         string roomName = "Room " + Random.Range(1000, 10000);
 
         RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2;
+        roomOptions.MaxPlayers = maxPlayerCount;
 
         PhotonNetwork.CreateRoom(roomName, roomOptions);
     }

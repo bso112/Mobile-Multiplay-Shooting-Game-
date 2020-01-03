@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class test : MonoBehaviour
 {
-    private void Start()
+    protected bool isAI;
+
+     void Start()
     {
-        Debug.Log("test");
+        if (isAI)
+        {
+            Debug.Log("AI입니다");
+            return;
+        }
+        Debug.Log("A");
     }
 }

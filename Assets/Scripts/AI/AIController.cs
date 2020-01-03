@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AIController : MonoBehaviour
+public class AIController : MonoBehaviour, ICharacterController
 {
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
+    public void AddUltiCharge(float val)
     {
-        
+        throw new System.NotImplementedException();
+    }
+
+    public void InitUltiCharge()
+    {
+        throw new System.NotImplementedException();
     }
 }

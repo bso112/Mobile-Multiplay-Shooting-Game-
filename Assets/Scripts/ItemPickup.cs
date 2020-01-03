@@ -12,7 +12,7 @@ public class ItemPickup : MonoBehaviour
     /// 플레이어가 먹은 동전 수(팀이 아님)
     /// </summary>
     public int score { get; private set; }
-    private PlayerSetup setup;
+    private CharacterSetup setup;
     private PhotonView view;
     private CharacterStats stats;
     private ScoreManager scoreMgr;
@@ -23,7 +23,7 @@ public class ItemPickup : MonoBehaviour
 
     private void Start()
     {
-        setup = GetComponent<PlayerSetup>();
+        setup = GetComponent<CharacterSetup>();
         view = GetComponent<PhotonView>();
         stats = GetComponent<CharacterStats>();
         stats.onPlayerDie += DropCoins;

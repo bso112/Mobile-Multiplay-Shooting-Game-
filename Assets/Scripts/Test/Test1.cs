@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Test1 : test
 {
-    private void Start()
+    private void Awake()
     {
-        Debug.Log("test1");
+        isAI = true;
     }
 
 }

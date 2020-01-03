@@ -81,7 +81,6 @@ public class ObjectPooler : MonoBehaviourPunCallbacks, IPunPrefabPool
 
     public GameObject Instantiate(string tag, Vector3 position, Quaternion rotation)
     {
-
         if (!poolDictionary.ContainsKey(tag))
         {
             Debug.LogWarning("The tag" + tag + "is not exist in poolDictionary");

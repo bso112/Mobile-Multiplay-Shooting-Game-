@@ -19,9 +19,6 @@ public class ScoreManager : MonoBehaviour
 
     public System.Action onScoreChanged;
 
-    //아군에게만 적용되는 효과를 구현하기 위한 장치
-    public int HomeTeam { get; private set; }
-
 
     private void Awake()
     {
@@ -44,10 +41,6 @@ public class ScoreManager : MonoBehaviour
     {
         scoreTextMgr = ScoreTextManager.Instance;
         view = GetComponent<PhotonView>();
-
-        ExitGames.Client.Photon.Hashtable properties = PhotonNetwork.LocalPlayer.CustomProperties;
-        HomeTeam = (int)properties["team"];
-        Debug.Log("홈팀은" + HomeTeam);
 
     }
 
