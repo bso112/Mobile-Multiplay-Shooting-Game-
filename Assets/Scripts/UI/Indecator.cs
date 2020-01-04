@@ -19,9 +19,10 @@ public class Indecator : MonoBehaviour
     private PhotonView view;
 
 
-    private void Start()
+    public void Start()
     {
         view = transform.GetComponentInParent<PhotonView>();
+        
         if(view !=null)
         {
             if (view.IsMine)

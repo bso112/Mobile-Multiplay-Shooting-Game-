@@ -96,7 +96,6 @@
     <Compile Include="Assets\IconGenerator\TextureScale.cs" />
     <Compile Include="Assets\Scripts\AI\AIController.cs" />
     <Compile Include="Assets\Scripts\AI\AISetup.cs" />
-    <Compile Include="Assets\Scripts\Bush.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterCombat.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterInfo.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterListController.cs" />
@@ -108,6 +107,7 @@
     <Compile Include="Assets\Scripts\Character\ICharacterController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerMotor.cs" />
+    <Compile Include="Assets\Scripts\Character\PlayerSetup.cs" />
     <Compile Include="Assets\Scripts\Coin.cs" />
     <Compile Include="Assets\Scripts\CoinGenerator.cs" />
     <Compile Include="Assets\Scripts\DataPipeline.cs" />
@@ -127,7 +127,6 @@
     <Compile Include="Assets\Scripts\NetworkManager.cs" />
     <Compile Include="Assets\Scripts\ObjectPooler.cs" />
     <Compile Include="Assets\Scripts\ParabolaMovement.cs" />
-    <Compile Include="Assets\Scripts\PlayerSetup.cs" />
     <Compile Include="Assets\Scripts\Projectile\Bomb.cs" />
     <Compile Include="Assets\Scripts\Projectile\Bullet.cs" />
     <Compile Include="Assets\Scripts\Projectile\Projectile.cs" />

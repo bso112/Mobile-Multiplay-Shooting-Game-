@@ -5,59 +5,8 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using System.IO;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-using ExitGames.Client.Photon;
-
-/// <summary>
-/// 스폰할 캐릭터들에 대한 정보
-/// </summary>
-public class PlayerInfo
-{
-    public byte Id { get; set; }
-
-    public int team;
-    public string character;
-    public int? actorNum;
-    public string nickname;
-    /// <summary>
-    /// 캐릭터가 스폰된 포지션. 리스폰에 쓰인다.
-    /// </summary>
-    public Vector3 spawnPos { get; set; }
-
-    PlayerInfo() { }
-
-    public PlayerInfo(int team, string character, string nickname, int? actorNum)
-    {
-        this.team = team;
-        this.character = character;
-        this.nickname = nickname;
-        this.actorNum = actorNum;
-    }
-
-    public override string ToString()
-    {
-        return "team :" + team + "character :" + character + "actorNum:" + actorNum + "nickname" + nickname;
-    }
 
 
-
-
-    public static object Deserialize(byte[] data)
-    {
-        var result = new PlayerInfo();
-        result.Id = data[0];
-        return result;
-    }
-
-    public static byte[] Serialize(object customType)
-    {
-        var c = (PlayerInfo)customType;
-        return new byte[] { c.Id };
-    }
-
-
-
-}
 
 public class GameManager : MonoBehaviour
 {
@@ -69,6 +18,29 @@ public class GameManager : MonoBehaviour
     /// 로컬 플레이어의 캐릭터 오브젝트
     /// </summary>
     public GameObject localPlayer { get; private set; }
+    /// <summary>
+    /// 로컬플레이어의 팀을 반환한다. 실패하면 -1을 반환한다.
+    /// </summary>
+    public int homeTeam
+    {
+        get
+        {
+
+            foreach (var info in characterInfo)
+            {
+                if ((int)info["actorNum"] == PhotonNetwork.LocalPlayer.ActorNumber)
+                {
+                    return (int)info["team"];
+                }
+            }
+
+
+            Debug.Log("홈팀을 찾지 못하였습니다");
+            return -1;
+
+        }
+
+    }
 
     [SerializeField]
     private Text countDownText;
@@ -81,13 +53,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject[] A_TeamProfiles;
-    private Text[] A_TeamNames = new Text[3]; 
+    private Text[] A_TeamNames = new Text[3];
     private Image[] A_TeamPortraits = new Image[3];
 
     [SerializeField]
     private GameObject[] B_TeamProfiles;
     private Image[] B_TeamPortraits = new Image[3];
-    private Text[] B_TeamNames = new Text[3]; 
+    private Text[] B_TeamNames = new Text[3];
 
     //A팀과 B팀의 스폰 포인트
     [SerializeField]
@@ -124,8 +96,8 @@ public class GameManager : MonoBehaviour
     //모든 플레이어가 셋팅되고 게임이 시작되었나?
     private bool isGameStart;
 
-    //생성할 캐릭터들에 대한 정보
-    private List<PlayerInfo> characterInfo = new List<PlayerInfo>();
+    //캐릭터 정보가 담긴 해쉬테이블
+    private List<ExitGames.Client.Photon.Hashtable> characterInfo = new List<ExitGames.Client.Photon.Hashtable>(); 
 
 
     [Header("AI로 스폰할 캐릭터들")]
@@ -142,7 +114,6 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
 
-
     }
 
 
@@ -152,8 +123,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
-        //커스텀타입 등록
-        PhotonPeer.RegisterType(typeof(PlayerInfo), 1, PlayerInfo.Serialize, PlayerInfo.Deserialize);
 
         photonView = GetComponent<PhotonView>();
         scoreMgr = ScoreManager.Instance;
@@ -176,8 +145,7 @@ public class GameManager : MonoBehaviour
 
 
         //프로필을 셋팅한다.
-
-        for(int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             A_TeamPortraits[i] = A_TeamProfiles[i].GetComponentInChildren<Image>();
             A_TeamNames[i] = A_TeamProfiles[i].GetComponentInChildren<Text>();
@@ -193,30 +161,32 @@ public class GameManager : MonoBehaviour
         {
             int team = 0;
 
-            //방에 있는 플레이어에들에 대한 정보를 playerInfo에 담는다.
+            //방에 있는 플레이어에들에 대한 정보를 characterInfo에 담는다.
             foreach (var player in PhotonNetwork.PlayerList)
             {
                 if (team > 1)
                     team = 0;
 
-                Hashtable properties = player.CustomProperties;
+                ExitGames.Client.Photon.Hashtable properties = player.CustomProperties;
 
                 Debug.Log("네트워크 매니저에서 넘어온 플레이어 " + player.NickName + "의 캐릭터:" + (string)properties["character"]);
 
-                PlayerInfo info = new PlayerInfo(team++, (string)properties["character"], player.NickName, player.ActorNumber);
+                ExitGames.Client.Photon.Hashtable info = new ExitGames.Client.Photon.Hashtable() { { "team", team++ }, { "character", (string)properties["character"]}, { "nickName", player.NickName},
+                                                                                             { "actorNum", player.ActorNumber } , {"spawnPos", null } };
                 photonView.RPC("AddcharacterInfoRPC", RpcTarget.AllBuffered, info);
 
             }
 
-            //만들어낼 AI에 대한 정보를 palyerInfo에 담는다.
+            //만들어낼 AI에 대한 정보를 characterInfo에 담는다.
             for (int i = 0; i < PhotonNetwork.CurrentRoom.MaxPlayers - PhotonNetwork.CurrentRoom.PlayerCount; i++)
             {
                 if (team > 1)
                     team = 0;
                 //AI의 캐릭터 정하기
                 int random = Random.Range(0, AICharacters.Length);
-                PlayerInfo AIInfo = new PlayerInfo(team++, AICharacters[random].name, "AI" + i, null);
-                photonView.RPC("AddcharacterInfoRPC", RpcTarget.AllBuffered, AIInfo);
+                ExitGames.Client.Photon.Hashtable AIinfo = new ExitGames.Client.Photon.Hashtable() { { "team", team++ }, { "character",AICharacters[random].name}, { "nickName", "AI" + i },
+                                                                                             { "actorNum", null } , {"spawnPos", null }};
+                photonView.RPC("AddcharacterInfoRPC", RpcTarget.AllBuffered, AIinfo);
             }
         }
 
@@ -229,7 +199,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="info"></param>
     [PunRPC]
-    private void AddcharacterInfoRPC(PlayerInfo info)
+    private void AddcharacterInfoRPC(ExitGames.Client.Photon.Hashtable info)
     {
         characterInfo.Add(info);
     }
@@ -355,37 +325,45 @@ public class GameManager : MonoBehaviour
             //마스터 클라이언트에서 모든 플레이어를 스폰하고 제어권을 각각의 플레이어에게 넘겨준다.
             if (PhotonNetwork.IsMasterClient)
             {
-                int spawnIndex = 0;
+                int A_spawnIndex = 0;
+                int B_spawnIndex = 0;
 
-                foreach (PlayerInfo info in characterInfo)
+                foreach (var info in characterInfo)
                 {
                     Debug.Log(info.ToString());
-                    Vector3 spawnPos = info.team == 0 ? A_spawnPoints[spawnIndex].position : B_spawnPoints[spawnIndex].position;
 
-                    GameObject character = PhotonNetwork.Instantiate(info.character, spawnPos, Quaternion.identity);
+                    string characterName = (string)info["character"];
+                    int team = (int)info["team"];
+                    int? actorNum = (int?)info["actorNum"];
+                    
+                    
+
+                    Vector3 spawnPos = team == 0 ? A_spawnPoints[A_spawnIndex++].position : B_spawnPoints[B_spawnIndex++].position;
+
+                    GameObject character = PhotonNetwork.Instantiate(characterName, spawnPos, Quaternion.identity);
 
 
                     //AI캐릭터에 대한 정보일 경우 넘긴다.
-                    if (info.actorNum == null)
+                    if (actorNum == null)
                     {
                         continue;
                     }
                     //로컬플레이어에 대한 정보일 경우 로컬플레이어에 전역변수에 할당한다.
-                    else if (info.actorNum != null && info.actorNum.Value == PhotonNetwork.LocalPlayer.ActorNumber)
+                    else if (actorNum != null && actorNum.Value == PhotonNetwork.LocalPlayer.ActorNumber)
                     {
                         localPlayer = character;
-
                     }
                     //로컬이 아닐경우
                     else
                     {
+
                         //캐릭터의 소유권을 해당 캐릭터 정보에 대한 로컬 플레이어에게 넘겨준다.
-                        character.GetComponent<PhotonView>().TransferOwnership(info.actorNum.Value);
+                        character.GetComponent<PhotonView>().TransferOwnership(actorNum.Value);
                     }
                     //해당 캐릭터의 팀을 정해준다(동기화)
-                    character.GetComponent<CharacterSetup>().SetTeamRPC(info.team);
+                    character.GetComponent<CharacterSetup>().SetTeamRPC(team);
                     //캐릭터를 생성한 위치를 정보에 넘겨준다.
-                    info.spawnPos = spawnPos;
+                    info["spawnPos"] = spawnPos;
 
                 }
 
@@ -425,20 +403,26 @@ public class GameManager : MonoBehaviour
 
         int index = 0;
 
-        foreach (PlayerInfo info in characterInfo)
+        foreach (var info in characterInfo)
         {
+            int team = (int)info["team"];
+            string nickname = (string)info["nickName"];
+            string character = (string)info["character"];
+            int? actorNum = (int?)info["actorNum"];
+
+
             //프로필 슬롯이 팀당 3개므로 인덱스가 2를 넘어가면 안됨
             if (index > 2)
             {
                 index = 0;
             }
 
-            Text[] nameTexts = info.team == 0 ? A_TeamNames : B_TeamNames;
-            Image[] portraits = info.team == 0 ? A_TeamPortraits : B_TeamPortraits;
+            Text[] nameTexts = team == 0 ? A_TeamNames : B_TeamNames;
+            Image[] portraits = team == 0 ? A_TeamPortraits : B_TeamPortraits;
 
 
-            nameTexts[index].text = info.nickname;
-            string portraitName = info.actorNum == null ? info.character.Replace("AI", "") : info.character;
+            nameTexts[index].text = nickname;
+            string portraitName = actorNum == null ? character.Replace("AI", "") : character;
             portraits[index].sprite = portraitDic[portraitName];
             index++;
         }
@@ -446,14 +430,19 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void Respawn(int actorNum)
+    public void Respawn(int _actorNum)
     {
 
         foreach (var info in characterInfo)
         {
-            if (info.actorNum == actorNum)
+            int team = (int)info["team"];
+            string character = (string)info["character"];
+            int? actorNum = (int?)info["actorNum"];
+            Vector3 spawnPos = (Vector3)info["spawnPos"];
+
+            if (actorNum == _actorNum)
             {
-                PhotonNetwork.Instantiate(info.character, info.spawnPos, Quaternion.identity);
+                PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
             }
         }
 
