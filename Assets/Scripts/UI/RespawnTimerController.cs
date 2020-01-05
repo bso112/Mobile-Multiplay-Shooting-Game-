@@ -23,7 +23,7 @@ public class RespawnTimerController : MonoBehaviour
         Fill.fillAmount = currentTime / maxTime;
         if(Fill.fillAmount >= 1)
         {
-            GameManager.Instance.Respawn(PhotonNetwork.LocalPlayer.ActorNumber);
+            GameManager.Instance.Respawn(GameManager.Instance.localPlayer.GetComponent<CharacterSetup>().playerID);
             currentTime = 0f;
             Fill.fillAmount = 0;
             gameObject.SetActive(false);

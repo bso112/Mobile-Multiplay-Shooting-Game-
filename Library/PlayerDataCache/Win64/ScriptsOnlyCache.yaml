@@ -254,7 +254,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11394}
     - Class: 114
-      Script: {instanceID: 25696}
+      Script: {instanceID: 25574}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -459,7 +459,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11400}
     - Class: 114
-      Script: {instanceID: 25696}
+      Script: {instanceID: 25574}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -1289,7 +1289,7 @@ ScriptsOnlyBuild:
     className: Block
   - hash:
       serializedVersion: 2
-      Hash: 82243b12f3586f93ee32ec4f9b524fe0
+      Hash: c1e86d65939ce3b7cd11a578c483130e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: AISetup
@@ -1577,7 +1577,7 @@ ScriptsOnlyBuild:
     className: ActivateTrigger
   - hash:
       serializedVersion: 2
-      Hash: d96b065cebbc7eefabd8ec37a5c74796
+      Hash: 2bfad392f77a128d4c6afe4d8a518627
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -2771,7 +2771,7 @@ ScriptsOnlyBuild:
     className: BoolInputField
   - hash:
       serializedVersion: 2
-      Hash: 82243b12f3586f93ee32ec4f9b524fe0
+      Hash: c1e86d65939ce3b7cd11a578c483130e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerSetup

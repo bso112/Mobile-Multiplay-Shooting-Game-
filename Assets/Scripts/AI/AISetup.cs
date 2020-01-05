@@ -8,12 +8,13 @@ using TMPro;
 public class AISetup : CharacterSetup
 {
 
-    private PhotonView photonView;
+    private PhotonView view;
     public TextMeshProUGUI nameText;
 
     private void Start()
     {
         transform.parent = null;
+        view = GetComponent<PhotonView>();
         SetPlayerName();
     }
 
@@ -24,9 +25,11 @@ public class AISetup : CharacterSetup
 
     public override void SetTeamRPC(int _team)
     {
-        if (photonView == null)
-            Debug.LogError("포톤 뷰가 없습니다");
-        photonView.RPC("SetTeam", RpcTarget.AllBuffered, _team);
+        if (view == null)
+        {
+            view = GetComponent<PhotonView>();
+        }
+        view.RPC("SetTeam", RpcTarget.AllBuffered, _team);
         Debug.Log(PhotonNetwork.LocalPlayer.NickName + "의 팀은" + Team);
     }
 

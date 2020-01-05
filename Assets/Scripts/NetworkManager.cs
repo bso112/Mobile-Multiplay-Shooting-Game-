@@ -136,6 +136,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinedRoom");
         playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + PhotonNetwork.CurrentRoom.MaxPlayers;
 
+        if(PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
+            PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex } });
+        }
+
         PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable() { { "character", currentPlayerPrefab } });
 
         isLocalEnteredRoom = true;
@@ -148,6 +154,19 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     //마스터 클라이언트에서만 실행
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        //team        0  1  0  1  0  1
+        //spawnIndex  0  0  1  1  2  2
+        if (team > 1)
+        {
+            team = 0;
+            spawnIndex++;
+        }
+
+
+
+        newPlayer.SetCustomProperties(new Hashtable() { { "team", team++ } });
+        newPlayer.SetCustomProperties(new Hashtable() { { "spawnIndex", spawnIndex} });
+
 
         playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + PhotonNetwork.CurrentRoom.MaxPlayers;
 
