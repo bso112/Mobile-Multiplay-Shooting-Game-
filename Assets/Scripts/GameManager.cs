@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
     private float cached_countDownMax;
 
     //모든 플레이어가 셋팅되고 게임이 시작되었나?
-    private bool isGameStart;
+    public bool isGameStart;
 
 
 
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] AICharacters;
 
 
-    private List<ExitGames.Client.Photon.Hashtable> playerInfos = new List<ExitGames.Client.Photon.Hashtable>();
+    public List<ExitGames.Client.Photon.Hashtable> playerInfos { get; private set; }
     //playerinfo의 기본키
     private int playerID = 0;
 
@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
 
+        playerInfos = new List<ExitGames.Client.Photon.Hashtable>(); 
     }
 
 
@@ -163,12 +164,6 @@ public class GameManager : MonoBehaviour
         }
 
         CurrentGameTime += Time.deltaTime;
-
-        if (CurrentGameTime >= 3.0f && isGameStart == false)
-        {
-            //게임 시작
-            isGameStart = true;
-        }
 
         if (CurrentGameTime >= GameTimeLimit)
         {
@@ -347,6 +342,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("not ready - offline");
         }
 
+        isGameStart = true;
         //3초후 게임시작하는 걸 가정함.
         Destroy(matchTablePanel, 3f);
 

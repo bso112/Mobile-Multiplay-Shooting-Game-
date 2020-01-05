@@ -7,7 +7,7 @@ using Photon.Pun;
 /// <summary>
 /// 상황에 따라 캐릭터의 상태를 변화시키는 스크립트
 /// </summary>
-public class PlayerController : MonoBehaviour, ICharacterController
+public class PlayerController : CharacterController
 {
 
     //풀어 들어갈때만 숨기고 나올때만 원래대로 하려고 쓰는 카운트 변수
@@ -29,8 +29,6 @@ public class PlayerController : MonoBehaviour, ICharacterController
 
     private void Start()
     {
-
-
         setup = GetComponent<PlayerSetup>();
         view = GetComponent<PhotonView>();
 
@@ -62,7 +60,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
     /// 궁극기 게이지를 val 만큼 채운다.
     /// </summary>
     /// <param name="val"> max = 1 </param>
-    public void AddUltiCharge(float val)
+    public override void AddUltiCharge(float val)
     {
         val = Mathf.Clamp(val, 0, 1);
         ultiCharage += val;
@@ -86,7 +84,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
     /// <summary>
     /// 궁극기를 쓴 뒤 궁극기에 대한 설정 초기화
     /// </summary>
-    public void InitUltiCharge()
+    public override void InitUltiCharge()
     {
         ultiCharage = 0;
         ultiFill.fillAmount = 0;
@@ -126,6 +124,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
             if (grasscount == 1)
             {
                 transform.Find("PlayerUI").gameObject.SetActive(false);
+                isHiding = true;
 
             }
 
@@ -152,6 +151,7 @@ public class PlayerController : MonoBehaviour, ICharacterController
                 transform.Find("PlayerUI").gameObject.SetActive(true);
                 //아군이건 적군이건 정상으로
                 playerRenderer.material = playerNormal;
+                isHiding = false;
             }
 
         }

@@ -105,7 +105,7 @@ public class Bullet : Projectile
             //상대 캐릭터의 공격력만큼 데미지 준다.
             target.TakeDamageRPC(ownerStats.attack.GetValue());
             //캐릭터의 궁극기 게이지를 채운다.
-            owner.GetComponent<ICharacterController>().AddUltiCharge(ultiCharge);
+            owner.GetComponent<CharacterController>().AddUltiCharge(ultiCharge);
         }
 
         //터질때 나타나는 이펙트

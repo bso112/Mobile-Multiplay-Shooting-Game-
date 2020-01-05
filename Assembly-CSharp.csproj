@@ -97,6 +97,7 @@
     <Compile Include="Assets\Scripts\AI\AIController.cs" />
     <Compile Include="Assets\Scripts\AI\AISetup.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterCombat.cs" />
+    <Compile Include="Assets\Scripts\Character\CharacterController.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterInfo.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterListController.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterPreview.cs" />
@@ -104,7 +105,6 @@
     <Compile Include="Assets\Scripts\Character\CharacterSlot.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStats.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterStatsUI.cs" />
-    <Compile Include="Assets\Scripts\Character\ICharacterController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerMotor.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerSetup.cs" />

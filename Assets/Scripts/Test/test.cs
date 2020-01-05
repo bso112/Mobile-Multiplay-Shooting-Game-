@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class test : MonoBehaviour
 {
-    protected bool isAI;
 
-     void Start()
+    NavMeshAgent agent;
+
+    public Transform target;
+    private void Start()
     {
-        if (isAI)
-        {
-            Debug.Log("AI입니다");
-            return;
-        }
-        Debug.Log("A");
+        agent = GetComponent<NavMeshAgent>();
+    }
+    void Update()
+    {
+        agent.SetDestination(target.position);
     }
 }

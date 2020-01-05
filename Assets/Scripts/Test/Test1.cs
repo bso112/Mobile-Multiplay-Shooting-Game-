@@ -4,9 +4,5 @@ using UnityEngine;
 
 public class Test1 : test
 {
-    private void Awake()
-    {
-        isAI = true;
-    }
 
 }

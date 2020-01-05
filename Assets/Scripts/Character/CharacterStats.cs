@@ -19,7 +19,7 @@ public class CharacterStats : MonoBehaviour
 
     public Image HealthUI;
 
-    float currentHP;
+    public float currentHP { get; private set; }
 
     private PhotonView photonView;
 

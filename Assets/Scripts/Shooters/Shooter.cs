@@ -33,14 +33,14 @@ public abstract class Shooter : MonoBehaviour
     /// <summary>
     /// 궁극기 사용후 게이지 초기화를 위해 사용
     /// </summary>
-    protected ICharacterController characterCon;
+    protected CharacterController characterCon;
 
     private void Start()
     {
         fx = GetComponent<AudioSource>();
         pooler = ObjectPooler.instance;
         ownerStats = GetComponent<CharacterStats>();
-        characterCon = GetComponent<ICharacterController>();
+        characterCon = GetComponent<CharacterController>();
     }
 
 
