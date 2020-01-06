@@ -18,7 +18,7 @@ public class AIController : CharacterController
      */
 
 
-        
+
     //풀어 들어갈때만 숨기고 나올때만 원래대로 하려고 쓰는 카운트 변수
     private int grasscount;
     private AISetup setup;
@@ -35,7 +35,7 @@ public class AIController : CharacterController
 
     private NavMeshAgent agent;
     private bool isAllplayerSetted;
-    private GameObject[] players;
+    private List<GameObject> players = new List<GameObject>();
     private float ultiCharage;
     private bool AIProcessExed;
 
@@ -47,36 +47,76 @@ public class AIController : CharacterController
         shooter = GetComponent<Shooter>();
     }
 
-    private void Start()
-    {
 
-    }
 
     private void Update()
     {
         if (GameManager.Instance.isGameStart && !isAllplayerSetted)
         {
-            players = GameObject.FindGameObjectsWithTag("Player");
+            players = GameManager.Instance.playerCharacters;
             isAllplayerSetted = true;
         }
-        
+
         //모든 플레이어에 대한 레퍼런스가 준비되면
         if (isAllplayerSetted)
         {
             //AI프로세스 코루틴을 한번가동한다.
-            if(!AIProcessExed)
+            if (!AIProcessExed)
             {
                 StartCoroutine(AIProcess());
                 AIProcessExed = true;
             }
         }
+
     }
 
+    //엉망이군..!
     private IEnumerator AIProcess()
     {
 
-        while(true)
+        //세이프 포인트 가져오기
+        Transform safePoints = GameObject.Find("SafePoints").transform;
+        Transform red_parent = safePoints.GetChild(0);
+        List<Transform> red_safePoints = new List<Transform>();
+        List<Transform> blue_safePoints = new List<Transform>();
+
+        for (int i = 0; i < red_parent.childCount; i++)
         {
+            red_safePoints.Add(red_parent.GetChild(i));
+        }
+        Transform blue_parent = safePoints.GetChild(1);
+
+        for (int i = 0; i < blue_parent.childCount; i++)
+        {
+            blue_safePoints.Add(blue_parent.GetChild(i));
+        }
+
+        Vector3 safePoint = Vector3.zero;
+
+        while (true)
+        {
+
+            //체력이 낮아지면 도망간다.
+            if (stats.currentHP < runThreshHold)
+            {
+                
+                //세이프포인트가 아직 셋팅안되었으면 셋팅
+                if (safePoint == Vector3.zero)
+                {
+                    //자신의 팀에 따라 맞는 세이프포인트로 가기
+                    int random = Random.Range(0, red_safePoints.Count);
+                    safePoint = setup.Team == 0 ? red_safePoints[random].position : blue_safePoints[random].position;
+                    agent.SetDestination(safePoint);
+                    yield return new WaitForSeconds(1);
+                    //체력이 찰때까지 가만히
+                    continue;
+                }
+            }
+
+
+
+            //플레이어 갱신
+            players = GameManager.Instance.playerCharacters;
             //최단거리에 있는 캐릭터 구하기
 
             //타겟 캐릭터
@@ -85,10 +125,13 @@ public class AIController : CharacterController
             float minDistance = float.MaxValue;
 
             foreach (var player in players)
-            {   
+            {
+                //플레이어가 파괴된 상태면 스킵
+                if (player == null)
+                    continue;
                 //자기자신 제외, 같은 팀 제외
                 if (player != gameObject && player.GetComponent<CharacterSetup>().Team != setup.Team)
-                {   
+                {
                     //상대 캐릭터와 자기자신간의 거리
                     float currDistance = Vector3.Distance(player.transform.position, transform.position);
 
@@ -100,18 +143,35 @@ public class AIController : CharacterController
                     {
                         minDistance = currDistance;
                         target = player;
-                        
+
                     }
                 }
             }
 
-            //타겟으로 가기
-            agent.SetDestination(target.transform.position);
+            if (agent != null && target != null)
+            {
+                //타겟으로 가기
+                agent.SetDestination(target.transform.position);
+                transform.LookAt(target.transform);
+
+
+            }
+
+            else if (agent == null)
+            {
+                Debug.Log("agent is null");
+            }
+            else
+            {
+                Debug.Log("target is null");
+                yield return new WaitForSeconds(1);
+                continue;
+            }
 
             //만약 사정거리만큼 거리가 될만큼 가까워지면
             if (Vector3.Distance(target.transform.position, transform.position) < stats.range.GetValue())
             {
-                
+
                 //파라볼라슈터는 타겟을 정해줘야한다.
                 ParabolaShooter parabolaShooter = target.GetComponent<ParabolaShooter>();
                 if (parabolaShooter != null)
@@ -133,36 +193,12 @@ public class AIController : CharacterController
 
             }
 
-            //체력이 낮아지면 도망간다.
-            if (stats.currentHP < runThreshHold)
-            {
-                //세이프 포인트 가져오기
-                Transform safePoints = GameObject.Find("SafePoints").transform;
-                Transform red_parent = safePoints.GetChild(0);
-                List<Transform> red_safePoints = new List<Transform>();
-                List<Transform> blue_safePoints = new List<Transform>();
 
-                for(int i =0; i <red_parent.childCount; i++)
-                {
-                    red_safePoints.Add(red_parent.GetChild(i));
-                }
-                Transform blue_parent = safePoints.GetChild(1);
-
-                for (int i = 0; i < blue_parent.childCount; i++)
-                {
-                    blue_safePoints.Add(blue_parent.GetChild(i));
-                }
-
-                //자신의 팀에 따라 맞는 세이프포인트로 가기
-                int random = Random.Range(0, red_safePoints.Count);
-                Vector3 safePoint = setup.Team == 0 ? red_safePoints[random].position : blue_safePoints[random].position;
-                agent.SetDestination(safePoint);
-            }
 
             //이 모든 것을 1초에 한번만 체크한다.
             yield return new WaitForSeconds(1);
         }
-       
+
     }
 
     public override void AddUltiCharge(float val)

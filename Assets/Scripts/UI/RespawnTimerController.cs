@@ -8,12 +8,17 @@ public class RespawnTimerController : MonoBehaviour
 {   
     [SerializeField] Image Fill;
     [Header("리스폰 대기시간(초)")]
-    [SerializeField] float maxTime;
+    private float maxTime;
     private float currentTime = 0f;
 
     private void OnEnable()
     {
         Fill.fillAmount = 0;
+    }
+
+    private void Start()
+    {
+        maxTime = GameManager.Instance.respawnWait;
     }
 
     // Update is called once per frame
@@ -23,7 +28,6 @@ public class RespawnTimerController : MonoBehaviour
         Fill.fillAmount = currentTime / maxTime;
         if(Fill.fillAmount >= 1)
         {
-            GameManager.Instance.Respawn(GameManager.Instance.localPlayer.GetComponent<CharacterSetup>().playerID);
             currentTime = 0f;
             Fill.fillAmount = 0;
             gameObject.SetActive(false);

@@ -83,9 +83,17 @@ public class GameManager : MonoBehaviour
 
     [Header("AI로 스폰할 캐릭터들")]
     public GameObject[] AICharacters;
+    [Header("리스폰 대기시간(초)")]
+    public float respawnWait;
 
-
+    /// <summary>
+    /// 플레이어들에 대한 정보
+    /// </summary>
     public List<ExitGames.Client.Photon.Hashtable> playerInfos { get; private set; }
+    /// <summary>
+    /// 플레이어들의 캐릭터 오브젝트에 대한 레퍼런스
+    /// </summary>
+    public List<GameObject> playerCharacters = new List<GameObject>();
     //playerinfo의 기본키
     private int playerID = 0;
 
@@ -100,7 +108,7 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
 
-        playerInfos = new List<ExitGames.Client.Photon.Hashtable>(); 
+        playerInfos = new List<ExitGames.Client.Photon.Hashtable>();
     }
 
 
@@ -157,7 +165,7 @@ public class GameManager : MonoBehaviour
     {
 
 
-        if (!Lock && ObjectPooler.instance.IsPoolReady)
+        if (!Lock && ObjectPooler.Instance.IsPoolReady)
         {
             InitGame();
             Lock = true;
@@ -264,6 +272,9 @@ public class GameManager : MonoBehaviour
             //플레이어 정보를 셋팅
             foreach (var player in PhotonNetwork.PlayerList)
             {
+
+
+
                 ExitGames.Client.Photon.Hashtable props = player.CustomProperties;
                 int team = (int)props["team"];
                 string character = (string)props["character"];
@@ -271,20 +282,25 @@ public class GameManager : MonoBehaviour
 
                 Vector3 spawnPos = team == 0 ? A_spawnPoints[spawnIndex].position : B_spawnPoints[spawnIndex].position;
 
+                //로컬 캐릭터 인스턴스화
+                if (player.IsLocal)
+                {
+                    GameObject go = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
+                    //플레이어 아이디 할당
+                    go.GetComponent<CharacterSetup>().playerID = playerID;
+                    //모든 인스턴스에 팀 정하기
+                    go.GetComponent<CharacterSetup>().SetTeamRPC(team);
+                    localPlayer = go;
+                    homeTeam = team;
+                }
+
+
                 ExitGames.Client.Photon.Hashtable info = new ExitGames.Client.Photon.Hashtable() { { "playerID", playerID++ }, { "team", team }, { "character", character },
                                                                                                    { "spawnPos", spawnPos }, { "nickname", player.NickName } };
 
                 photonView.RPC("AddPlayerInfoRPC", RpcTarget.AllBuffered, info);
 
-                //로컬 캐릭터 인스턴스화
-                if (player.IsLocal)
-                {
-                    GameObject go = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
-                    go.GetComponent<CharacterSetup>().playerID = playerID;
-                    go.GetComponent<CharacterSetup>().SetTeamRPC(team);
-                    localPlayer = go;
-                    homeTeam = team;
-                }
+
             }
 
             //마스터클라이언트에서 AI를 인스턴스화한다.
@@ -343,6 +359,20 @@ public class GameManager : MonoBehaviour
         }
 
         isGameStart = true;
+
+        //모든 플레이어에 대한 레퍼런스를 모은다.
+        GameObject[] characters = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var character in characters)
+        {
+            playerCharacters.Add(character);
+            CharacterStats stats = character.GetComponent<CharacterStats>();
+            //캐릭터가 죽을때 캐릭터 목록에서 삭제하도록한다.
+            stats.onPlayerDie += () => { playerCharacters.Remove(character); };
+            //죽을때 respawnWait만큼 기다리고 리스폰하도록 한다.
+            stats.onPlayerDie += () => Respawn(character.GetComponent<CharacterSetup>().playerID, respawnWait);
+
+        }
+
         //3초후 게임시작하는 걸 가정함.
         Destroy(matchTablePanel, 3f);
 
@@ -385,16 +415,46 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void Respawn(int playerID)
+    /// <summary>
+    /// 리스폰한다.
+    /// </summary>
+    /// <param name="playerID"></param>
+    /// <param name="delay">초단위</param>
+    public void Respawn(int playerID, float delay = 0f)
     {
+        StartCoroutine(RespawnCorutine(playerID, delay));
+    }
+
+    private IEnumerator RespawnCorutine(int playerID, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
         foreach (var info in playerInfos)
         {
             int ID = (int)info["playerID"];
             string character = (string)info["character"];
             Vector3 spawnPos = (Vector3)info["spawnPos"];
+            int team = (int)info["team"];
 
             if (ID == playerID)
-                PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
+            {
+                GameObject newCharacter = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
+                //캐릭터 목록에 추가한다.
+                playerCharacters.Add(newCharacter);
+                //캐릭터가 죽을때 캐릭터목록에서 삭제하도록한다.
+                CharacterStats stats = newCharacter.GetComponent<CharacterStats>();
+                stats.onPlayerDie += () => { playerCharacters.Remove(newCharacter); };
+                //캐릭터의 플레이어 ID를 유지한다.
+                //캐릭터의 팀도 유지한다.
+                CharacterSetup setup = newCharacter.GetComponent<CharacterSetup>();
+                setup.playerID = playerID;
+                setup.Team = team;
+                //죽으면 리스폰
+                stats.onPlayerDie += () => Respawn(newCharacter.GetComponent<CharacterSetup>().playerID, respawnWait);
+
+
+
+            }
         }
 
 

@@ -38,7 +38,6 @@ public class Bomb : Projectile
 
     private new void Start()
     {
-        base.Start();
         startPos = transform.position;
         controller = GetComponent<ParabolaController>();
         renderers = GetComponentsInChildren<Renderer>();
@@ -110,13 +109,11 @@ public class Bomb : Projectile
 
 
         float delay = effectObj.GetComponent<ParticleSystem>().main.duration;
-        if (view.IsMine)
-        {
-            effectObj.GetComponent<Effect>().Photon_Destroy(delay);
-            //오브젝트 파괴
-            PhotonNetwork.Destroy(this.gameObject);
-            
-        }
+
+        effectObj.GetComponent<Effect>().Photon_Destroy(delay);
+        //오브젝트 파괴
+        PhotonNetwork.Destroy(this.gameObject);
+
 
         //오프라인 테스트용 코드
         if (!PhotonNetwork.IsConnectedAndReady)

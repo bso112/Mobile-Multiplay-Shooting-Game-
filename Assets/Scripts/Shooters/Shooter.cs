@@ -24,7 +24,6 @@ public abstract class Shooter : MonoBehaviour
     private AudioSource fx;
     
     protected GameObject currentProjectile;
-    protected ObjectPooler pooler;
     protected CharacterStats ownerStats;
 
     private float timeStampForAttack;
@@ -38,7 +37,6 @@ public abstract class Shooter : MonoBehaviour
     private void Start()
     {
         fx = GetComponent<AudioSource>();
-        pooler = ObjectPooler.instance;
         ownerStats = GetComponent<CharacterStats>();
         characterCon = GetComponent<CharacterController>();
     }

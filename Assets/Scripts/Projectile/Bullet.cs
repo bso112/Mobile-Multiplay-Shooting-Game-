@@ -18,26 +18,25 @@ public class Bullet : Projectile
     public float ultiCharge;
     private bool isConnectedAndReady;
     private bool isInitialized;
+    private ObjectPooler pool;
 
-
+    //오너의 팀
+    private int team;
 
     //처음 한번
     private new void Start()
     {
-        isConnectedAndReady = PhotonNetwork.IsConnectedAndReady;
-        base.Start();
+        pool = ObjectPooler.Instance;
 
         if (muzzleParticle)
         {
-            muzzleParticle = PhotonNetwork.Instantiate(muzzleParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
-            Effect effect = muzzleParticle.GetComponent<Effect>();
-            if (view.IsMine || !isConnectedAndReady)
-                effect.Photon_Destroy(1.5f);
+            GameObject particle = pool.Instantiate(muzzleParticle.name, transform.position, transform.rotation) as GameObject;
+            pool.Destroy(particle, 1.5f);
         }
 
         isInitialized = true;
-
-
+        
+        
     }
 
     private void OnEnable()
@@ -54,10 +53,8 @@ public class Bullet : Projectile
 
             if (muzzleParticle)
             {
-                muzzleParticle = PhotonNetwork.Instantiate(muzzleParticle.name.Replace("(Clone)", ""), transform.position, transform.rotation) as GameObject;
-                Effect effect = muzzleParticle.GetComponent<Effect>();
-                if (view.IsMine || !isConnectedAndReady)
-                    effect.Photon_Destroy(1.5f);
+                GameObject particle = pool.Instantiate(muzzleParticle.name, transform.position, transform.rotation) as GameObject;
+                pool.Destroy(particle, 1.5f);
             }
         }
     }
@@ -75,14 +72,23 @@ public class Bullet : Projectile
     // Update is called once per frame
     void Update()
     {
-        if (ownerStats == null)
+
+        //오너가 할당이 안됬거나, 파괴되었으면 아무것도 안함
+        if (owner == null)
             return;
+
+        //오너가 할당되면 오너스탯을 가져옴. 덤으로 팀도 가져옴
+        if(owner != null && ownerStats == null)
+        {
+            ownerStats = owner.GetComponent<CharacterStats>();
+            team = owner.GetComponent<CharacterSetup>().Team;
+        }
+
         //사거리 벗어나면 사라짐 (y축 방향 제외).. 발사체의 크기를 고려해 공격범위로부터 +2 만큼을 최대로 둠.
         float range = ownerStats.range.GetValue();
         if (Mathf.Abs(owner.position.x - transform.position.x) > range + 2 || Mathf.Abs(owner.position.z - transform.position.z) > range + 2)
         {
-            if (view.IsMine || !isConnectedAndReady)
-                PhotonNetwork.Destroy(gameObject);
+            pool.Destroy(gameObject);
         }
 
 
@@ -90,37 +96,27 @@ public class Bullet : Projectile
 
     private void OnTriggerEnter(Collider other)
     {
-
-        Debug.Log("발사체가 트리거 된 것: " + other.name);
-        //같은 발사체끼리 부딪치면 무시
-        if (other.gameObject.name == gameObject.name || other.tag == "Grass" || other.tag == "Coin")
-        {
+        //오너가 할당이 안됬거나, 파괴되었으면 아무것도 안함
+        if (owner == null)
             return;
-        }
 
         //부딪힌게 상대 캐릭터면 데미지를 준다.
         CharacterStats target = other.gameObject.GetComponent<CharacterStats>();
-        if (target != null && ownerStats != null && target != ownerStats)
+        //자기자신이 아니고, 적군이면
+        if (target != null && ownerStats != null && target != ownerStats && other.GetComponent<CharacterSetup>().Team != team)
         {
             //상대 캐릭터의 공격력만큼 데미지 준다.
             target.TakeDamageRPC(ownerStats.attack.GetValue());
             //캐릭터의 궁극기 게이지를 채운다.
             owner.GetComponent<CharacterController>().AddUltiCharge(ultiCharge);
+
+            //터질때 나타나는 이펙트
+            GameObject particle = pool.Instantiate(impactParticle.name, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal));
+            pool.Destroy(particle, 5f);
+            pool.Destroy(gameObject);
         }
 
-        //터질때 나타나는 이펙트
-        impactParticle = PhotonNetwork.Instantiate(impactParticle.name.Replace("(Clone)", ""), transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal));
 
-
-        //이펙트를 하나하나 끈다.
-        if (view.IsMine || !isConnectedAndReady)
-        {
-            Effect e_impactParticle = impactParticle.GetComponent<Effect>();
-            e_impactParticle.Photon_Destroy(5f);
-            PhotonNetwork.Destroy(gameObject);
-
-
-        }
     }
 
 }

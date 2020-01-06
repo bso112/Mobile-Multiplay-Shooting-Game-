@@ -33,9 +33,12 @@ public class SpreadingShooter : Shooter
             Vector3 bulletAngle = new Vector3(0, transform.rotation.eulerAngles.y + angle, 0);
             angle += spreadAngle / shotPerFire;
             //발사체 스폰
-            GameObject projectile = Photon.Pun.PhotonNetwork.Instantiate(projectilePrefab.name, shotPos[shotPosCount].position, Quaternion.Euler(bulletAngle));
-            Rigidbody projectileRB = projectile.GetComponent<Rigidbody>();
-            projectileRB.AddForce(projectile.transform.forward * shotPower);
+            GameObject go = ObjectPooler.Instance.Instantiate(projectilePrefab.name, shotPos[shotPosCount].position, Quaternion.Euler(bulletAngle));
+            Rigidbody projectileRB = go.GetComponent<Rigidbody>();
+            //발사체에 주인 알려주기
+            Projectile projectile = go.GetComponent<Projectile>();
+            projectile.owner = transform;
+            projectileRB.AddForce(go.transform.forward * shotPower);
         }
         shotPosCount++;
         shotPosCount %= shotPos.Length;

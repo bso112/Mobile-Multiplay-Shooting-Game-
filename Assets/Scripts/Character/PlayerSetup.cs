@@ -63,6 +63,12 @@ public class PlayerSetup : CharacterSetup
     }
 
 
+    private void OnDestroy()
+    {
+        Joystick attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
+        attackJoystick.onPointerUp -= GetComponent<Shooter>().OnShotButtonClicked;
+    }
+
 
     private void SetPlayerName()
     {

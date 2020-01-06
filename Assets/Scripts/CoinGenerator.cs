@@ -12,9 +12,12 @@ public class CoinGenerator : MonoBehaviour
     private float timeStamp;
 
     private bool Lock = false;
+    private ObjectPooler pool;
 
     private void Start()
-    {   
+    {
+        pool = ObjectPooler.Instance;
+
         if(!PhotonNetwork.IsMasterClient)
         {
             this.enabled = false;
@@ -23,17 +26,11 @@ public class CoinGenerator : MonoBehaviour
         {
             this.enabled = true;
         }
-        ObjectPooler.instance.OnObjectPoolReady += SpawnCoin;
+
+        pool.onObjectPoolReady += ()=> { if (PhotonNetwork.IsMasterClient) SpawnCoin(); };
+
     }
 
-    private void Update()
-    {
-        if (!Lock && ObjectPooler.instance.IsPoolReady)
-        {
-            SpawnCoin();
-            Lock = true;
-        }
-    }
 
     void SpawnCoin()
     {
@@ -51,7 +48,7 @@ public class CoinGenerator : MonoBehaviour
                 float z = Random.Range(-1f, 1f);
                 Vector3 randomDir = new Vector3(x, 1, z);
 
-                GameObject coin = PhotonNetwork.Instantiate("Coin", popPos.position, Quaternion.identity);
+                GameObject coin = PhotonNetwork.Instantiate("Coin", popPos.position, Quaternion.identity);   
 
                 coin.GetComponent<Rigidbody>().AddForce(randomDir * popPower, ForceMode.Impulse);
 
