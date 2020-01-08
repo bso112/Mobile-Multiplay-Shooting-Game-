@@ -29,6 +29,16 @@ public class CharacterStats : MonoBehaviour, IPunInstantiateMagicCallback
     public System.Action onPlayerDie;
 
 
+    /// <summary>
+    /// 체력을 회복한다
+    /// </summary>
+    /// <param name="healAmount"></param>
+    public void Heal(float healAmount)
+    {
+        currentHP += healAmount;
+    }
+
+
     public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         if (HealthUI != null)

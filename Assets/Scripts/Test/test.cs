@@ -5,12 +5,9 @@ using UnityEngine.AI;
 
 public abstract class test : MonoBehaviour
 {
-
-
-    public void print()
+    protected virtual void Update()
     {
-        printA();
+        Debug.Log("test");
     }
-    protected abstract void printA();
 
 }

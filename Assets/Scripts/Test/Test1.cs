@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Test1 : test
 {
-
-    protected override void printA()
+    protected override void Update()
     {
-        Debug.Log("A");
+        base.Update();
+        Debug.Log("test1");
     }
 }

@@ -22,7 +22,6 @@ public class AIController : CharacterController
     //풀어 들어갈때만 숨기고 나올때만 원래대로 하려고 쓰는 카운트 변수
     private int grasscount;
     private AISetup setup;
-    private CharacterStats stats;
     private Shooter shooter;
 
     [Header("캐릭터의 렌더러와 상황별 메테리얼")]
@@ -39,18 +38,20 @@ public class AIController : CharacterController
     private float ultiCharage;
     private bool AIProcessExed;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         agent = GetComponent<NavMeshAgent>();
         setup = GetComponent<AISetup>();
-        stats = GetComponent<CharacterStats>();
         shooter = GetComponent<Shooter>();
     }
 
 
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
+
         if (GameManager.Instance.isGameStart && !isAllplayerSetted)
         {
             players = GameManager.Instance.playerCharacters;
@@ -70,7 +71,6 @@ public class AIController : CharacterController
 
     }
 
-    //엉망이군..!
     private IEnumerator AIProcess()
     {
 
@@ -92,6 +92,8 @@ public class AIController : CharacterController
         }
 
         Vector3 safePoint = Vector3.zero;
+        //세이프포인트 선택에 사용할 랜덤인덱스
+        int random = Random.Range(0, red_safePoints.Count);
 
         while (true)
         {
@@ -104,7 +106,6 @@ public class AIController : CharacterController
                 if (safePoint == Vector3.zero)
                 {
                     //자신의 팀에 따라 맞는 세이프포인트로 가기
-                    int random = Random.Range(0, red_safePoints.Count);
                     safePoint = setup.Team == 0 ? red_safePoints[random].position : blue_safePoints[random].position;
                     agent.SetDestination(safePoint);
                     yield return new WaitForSeconds(1);
