@@ -19,6 +19,7 @@ public class PlayerController : CharacterController, IPunInstantiateMagicCallbac
     public Material playerInvis, playerNormal, playerSemiInvis;
     private float ultiCharage;
 
+    //이 UI컴포넌트들은 로컬플레이어에게만 사용된다.
     private GameObject respawnTimer;
     private Button ultiBtn;
     private Animator ultiAnim;
@@ -35,28 +36,31 @@ public class PlayerController : CharacterController, IPunInstantiateMagicCallbac
     /// <param name="val"> max = 1 </param>
     public override void AddUltiCharge(float val)
     {
+
         val = Mathf.Clamp(val, 0, 1);
         ultiCharage += val;
-        if(ultiFill == null)
-        {
-            Debug.Log("ultiFill이 없어!");
-            ultiFill = ultiBtn.transform.Find("ChargeAmount").GetComponent<Image>();
-        }
-        ultiFill.fillAmount = ultiCharage;
 
-        //궁극기가 준비되면
-        if (ultiCharage >= 1)
+        //로컬플레이어가 주인이면 (리모트플레이어의 분신은 실행안함)
+        if (view.IsMine)
         {
-            //궁극기 버튼 활성화
-            ultiBtn.enabled = true;
-            ultiAnim.enabled = true;
-            //궁극기 활성화
+
+            ultiFill.fillAmount = ultiCharage;
+
+            //궁극기가 준비되면
+            if (ultiCharage >= 1)
+            {
+                //궁극기 버튼 활성화
+                ultiBtn.enabled = true;
+                ultiAnim.enabled = true;
+                //궁극기 활성화
+            }
+            else
+            {
+                ultiBtn.enabled = false;
+                ultiAnim.enabled = false;
+            }
         }
-        else
-        {
-            ultiBtn.enabled = false;
-            ultiAnim.enabled = false;
-        }
+       
     }
 
     /// <summary>
@@ -65,9 +69,14 @@ public class PlayerController : CharacterController, IPunInstantiateMagicCallbac
     public override void InitUltiCharge()
     {
         ultiCharage = 0;
-        ultiFill.fillAmount = 0;
-        ultiBtn.enabled = false;
-        ultiAnim.enabled = false;
+
+        if(view.IsMine)
+        {
+            ultiFill.fillAmount = 0;
+            ultiBtn.enabled = false;
+            ultiAnim.enabled = false;
+        }
+        
     }
 
 
@@ -163,6 +172,7 @@ public class PlayerController : CharacterController, IPunInstantiateMagicCallbac
                 ultiBtn = canvas.Find("UltimateButton").GetComponent<Button>();
                 ultiAnim = ultiBtn.transform.Find("Skull").GetComponent<Animator>();
                 ultiFill = ultiBtn.transform.Find("ChargeAmount").GetComponent<Image>();
+                ultiBtn.enabled = false;
                
 
 

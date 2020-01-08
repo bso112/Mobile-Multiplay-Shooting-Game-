@@ -38,7 +38,7 @@ public class Indecator : MonoBehaviour
 
     private void OnPointerDown()
     {
-        //이벤트가 실행됬는데 게임오브젝트는 파괴되어있을 수 있다.
+        //이벤트가 실행됬는데 인디케이터는 파괴되어있을 수 있다.
         if(gameObject != null)
             gameObject.SetActive(true);
     }
