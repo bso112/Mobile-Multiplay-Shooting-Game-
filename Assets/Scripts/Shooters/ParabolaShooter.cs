@@ -12,7 +12,7 @@ public class ParabolaShooter : Shooter
     [Header("위로 뜨는 정도")]
     public float upPower;
 
-    protected override IEnumerator Shoot(GameObject projectilePrefab)
+    protected override IEnumerator ShootCorutine()
     {
         //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
         yield return new WaitForSeconds(0.3f);
@@ -46,9 +46,9 @@ public class ParabolaShooter : Shooter
 
     }
 
-    protected override IEnumerator Ultimate(GameObject _projectilePrefab)
+    protected override IEnumerator UltimateCorutine()
     {
-        StartCoroutine(Shoot(_projectilePrefab));
+        StartCoroutine(ShootCorutine());
         characterCon.InitUltiCharge();
         yield return null;
     }

@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 [RequireComponent(typeof(CharacterStats))]
-public abstract class Shooter : MonoBehaviour
+public abstract class Shooter : MonoBehaviour, IPunInstantiateMagicCallback
 {
     public GameObject projectilePrefab;
     public GameObject specialProjectilePrefab;
@@ -34,12 +35,6 @@ public abstract class Shooter : MonoBehaviour
     /// </summary>
     protected CharacterController characterCon;
 
-    private void Start()
-    {
-        fx = GetComponent<AudioSource>();
-        ownerStats = GetComponent<CharacterStats>();
-        characterCon = GetComponent<CharacterController>();
-    }
 
 
     public void OnShotButtonClicked()
@@ -58,12 +53,17 @@ public abstract class Shooter : MonoBehaviour
                 fx.Play();
                 Debug.Log("효과음 실행");
             }
-            StartCoroutine(Shoot(projectilePrefab));
+
+            PhotonView view = GetComponent<PhotonView>();
+            if (view != null)
+                view.RPC("Shoot", RpcTarget.AllBuffered);
+            else
+                Debug.Log("view is null");
+
             timeStampForAttack = Time.time + fireCoolDown;
         }
         
     }
-
 
     public void OnUltiButtonClicked()
     {
@@ -78,20 +78,35 @@ public abstract class Shooter : MonoBehaviour
         if (timeStampForUlti <= Time.time)
         {
             Debug.Log("궁극기!");
-            StartCoroutine(Ultimate(specialProjectilePrefab));
+            PhotonView view = GetComponent<PhotonView>();
+            if (view != null)
+                view.RPC("Ultimate", RpcTarget.All);
+            else
+                Debug.Log("view is null");
             timeStampForUlti = Time.time + UltiCoolDown;
         }
     }
 
-    protected abstract IEnumerator Shoot(GameObject projectilePrefab);
+    [PunRPC]
+    protected void Shoot()
+    {
+        StartCoroutine(ShootCorutine());
+    }
 
-    protected abstract IEnumerator Ultimate(GameObject projectilePrefab);
+    [PunRPC]
+    protected void Ultimate()
+    {
+        StartCoroutine(UltimateCorutine());
+    }
 
-   
+    protected abstract IEnumerator ShootCorutine();
 
+    protected abstract IEnumerator UltimateCorutine();
 
-
-
-
-
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        fx = GetComponent<AudioSource>();
+        ownerStats = GetComponent<CharacterStats>();
+        characterCon = GetComponent<CharacterController>();
+    }
 }

@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class test : MonoBehaviour
+public abstract class test : MonoBehaviour
 {
 
-    NavMeshAgent agent;
 
-    public Transform target;
-    private void Start()
+    public void print()
     {
-        agent = GetComponent<NavMeshAgent>();
+        printA();
     }
-    void Update()
-    {
-        agent.SetDestination(target.position);
-    }
+    protected abstract void printA();
+
 }

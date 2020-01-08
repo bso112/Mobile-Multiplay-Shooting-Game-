@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class CharacterStats : MonoBehaviour
+public class CharacterStats : MonoBehaviour, IPunInstantiateMagicCallback
 {
 
     public Stat Maxhp;
@@ -29,17 +29,16 @@ public class CharacterStats : MonoBehaviour
     public System.Action onPlayerDie;
 
 
-    private void OnEnable()
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
-        if(HealthUI != null)
+        if (HealthUI != null)
             HealthUI.fillAmount = 1;
         currentHP = Maxhp.GetValue();
+
+         photonView = GetComponent<PhotonView>();
+
     }
 
-    private void Start()
-    {
-        photonView = GetComponent<PhotonView>();
-    }
 
     public void TakeDamageRPC(float _damage)
     {
@@ -66,9 +65,14 @@ public class CharacterStats : MonoBehaviour
 
     protected virtual void Die()
     {
+        Debug.Log(gameObject + "가 죽었습니다. viewID : " + GetComponent<PhotonView>().ViewID);
         onPlayerDie?.Invoke();
+        //모든 이벤트 리스너를 제거한다.
+        onPlayerDie = null;
         if (photonView.IsMine)
             PhotonNetwork.Destroy(gameObject);
        
     }
+
+
 }

@@ -5,7 +5,7 @@ using Photon.Pun;
 public class StraightShooter : Shooter
 {
 
-    protected override IEnumerator Shoot(GameObject projectilePrefab)
+    protected override IEnumerator ShootCorutine()
     {
         //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
         yield return new WaitForSeconds(0.1f);
@@ -26,7 +26,7 @@ public class StraightShooter : Shooter
 
     }
 
-    protected override IEnumerator Ultimate(GameObject projectilePrefab)
+    protected override IEnumerator UltimateCorutine()
     {
         //캐릭터가 총구방향으로 몸을 돌릴때까지 대기
         yield return new WaitForSeconds(0.1f);

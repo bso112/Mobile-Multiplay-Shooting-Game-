@@ -3,8 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class ObjectPooler : Singleton<ObjectPooler>
+public class ObjectPooler : MonoBehaviour
 {
+
+    public static ObjectPooler Instance;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.Log("more than one gameManager");
+            return;
+        }
+        Instance = this;
+
+     
+    }
+
     //오브젝트 풀러는 모든 인스턴스에서 실행되어야한다.(마스터 클라이언트에서 만들고 다른 인스턴스에서 사용하는 것이 아님)
 
     [System.Serializable]
@@ -18,7 +33,6 @@ public class ObjectPooler : Singleton<ObjectPooler>
     }
 
    
-
     public List<Pool> pools;
 
     //큐를 쓰는 이유는 꺼낼때 빠르기 떄문이다.(스택과는 다르게 인간이 볼때 합리적인 순서로 저장되는 자료구조이기도하고) List는 인덱스로 꺼내고, 큐는 그냥 꺼내기 떄문에 더 빠름.
@@ -31,6 +45,7 @@ public class ObjectPooler : Singleton<ObjectPooler>
     // Start is called before the first frame update
     void Start()
     {
+        IsPoolReady = false;
 
         poolDictionary = new Dictionary<string, Queue<GameObject>>();
 

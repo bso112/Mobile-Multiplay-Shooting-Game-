@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
     public int homeTeam = -1;
 
 
+    //플레이어가 죽을때 이벤트를 초기화하기 위해서 레퍼런스를 가지고 있다.
+    [SerializeField] private Joystick moveJoystick;
+    [SerializeField] private Joystick attackJoystick;
+
     [SerializeField]
     private Text countDownText;
 
@@ -94,8 +98,8 @@ public class GameManager : MonoBehaviour
     /// 플레이어들의 캐릭터 오브젝트에 대한 레퍼런스
     /// </summary>
     public List<GameObject> playerCharacters = new List<GameObject>();
-    //playerinfo의 기본키
-    private int playerID = 0;
+    //인공지능 캐릭터들을 구분하기 위한 아이디(플레이어의 경우 엑터넘버임)
+    private int playerID = 100;
 
 
 
@@ -148,13 +152,15 @@ public class GameManager : MonoBehaviour
         }
 
 
-
-
+        //캐릭터들을 배치한다.
+        InitGame();
 
     }
 
+    
+
     [PunRPC]
-    private void AddPlayerInfoRPC(ExitGames.Client.Photon.Hashtable info)
+    void AddPlayerInfoRPC(ExitGames.Client.Photon.Hashtable info)
     {
         playerInfos.Add(info);
     }
@@ -164,12 +170,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
 
-
-        if (!Lock && ObjectPooler.Instance.IsPoolReady)
-        {
-            InitGame();
-            Lock = true;
-        }
 
         CurrentGameTime += Time.deltaTime;
 
@@ -269,39 +269,35 @@ public class GameManager : MonoBehaviour
 
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            //플레이어 정보를 셋팅
-            foreach (var player in PhotonNetwork.PlayerList)
-            {
+            //로컬 플레이어의 커스텀프로퍼티 가져온다
+            ExitGames.Client.Photon.Hashtable props = PhotonNetwork.LocalPlayer.CustomProperties;
+            int team = (int)props["team"];
+            string character = (string)props["character"];
+            int spawnIndex = (int)props["spawnIndex"];
+
+            Vector3 spawnPos = team == 0 ? A_spawnPoints[spawnIndex].position : B_spawnPoints[spawnIndex].position;
+
+
+            //로컬플레이어 인스턴스화
+            GameObject go = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
+            //플레이어 아이디 할당
+            go.GetComponent<CharacterSetup>().playerID = PhotonNetwork.LocalPlayer.ActorNumber;
+            //모든 인스턴스에 팀 정하기
+            go.GetComponent<CharacterSetup>().SetTeamRPC(team);
+            localPlayer = go;
+            homeTeam = team;
+
+            
+            ExitGames.Client.Photon.Hashtable info = new ExitGames.Client.Photon.Hashtable() { { "playerID", PhotonNetwork.LocalPlayer.ActorNumber }, { "team", team }, { "character", character },
+                                                                                                   { "spawnPos", spawnPos }, { "nickname", PhotonNetwork.LocalPlayer.NickName } };
+
+            //로컬플레이어 정보 저장
+            photonView.RPC("AddPlayerInfoRPC", RpcTarget.AllBuffered, info);
 
 
 
-                ExitGames.Client.Photon.Hashtable props = player.CustomProperties;
-                int team = (int)props["team"];
-                string character = (string)props["character"];
-                int spawnIndex = (int)props["spawnIndex"];
-
-                Vector3 spawnPos = team == 0 ? A_spawnPoints[spawnIndex].position : B_spawnPoints[spawnIndex].position;
-
-                //로컬 캐릭터 인스턴스화
-                if (player.IsLocal)
-                {
-                    GameObject go = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
-                    //플레이어 아이디 할당
-                    go.GetComponent<CharacterSetup>().playerID = playerID;
-                    //모든 인스턴스에 팀 정하기
-                    go.GetComponent<CharacterSetup>().SetTeamRPC(team);
-                    localPlayer = go;
-                    homeTeam = team;
-                }
 
 
-                ExitGames.Client.Photon.Hashtable info = new ExitGames.Client.Photon.Hashtable() { { "playerID", playerID++ }, { "team", team }, { "character", character },
-                                                                                                   { "spawnPos", spawnPos }, { "nickname", player.NickName } };
-
-                photonView.RPC("AddPlayerInfoRPC", RpcTarget.AllBuffered, info);
-
-
-            }
 
             //마스터클라이언트에서 AI를 인스턴스화한다.
             if (PhotonNetwork.IsMasterClient)
@@ -340,10 +336,10 @@ public class GameManager : MonoBehaviour
                     GameObject AIgo = PhotonNetwork.Instantiate(AICharacters[random].name, AISpawnPos, Quaternion.identity);
                     AIgo.GetComponent<CharacterSetup>().playerID = playerID;
                     AIgo.GetComponent<CharacterSetup>().SetTeamRPC(AITeam);
-                    ExitGames.Client.Photon.Hashtable info = new ExitGames.Client.Photon.Hashtable() { { "playerID", playerID++ }, { "team", AITeam }, { "character", AICharacters[random].name },
+                    ExitGames.Client.Photon.Hashtable AIInfo = new ExitGames.Client.Photon.Hashtable() { { "playerID", playerID++ }, { "team", AITeam }, { "character", AICharacters[random].name },
                                                                                                    { "spawnPos", AISpawnPos }, { "nickname", "AI" + i } };
 
-                    photonView.RPC("AddPlayerInfoRPC", RpcTarget.AllBuffered, info);
+                    photonView.RPC("AddPlayerInfoRPC", RpcTarget.AllBuffered, AIInfo);
 
 
                     AITeam++;
@@ -379,6 +375,7 @@ public class GameManager : MonoBehaviour
 
 
     }
+
 
 
     //매치테이블을 셋팅
@@ -427,10 +424,32 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RespawnCorutine(int playerID, float delay)
     {
+
+        int order = 0;
+        foreach(var info in playerInfos)
+        {
+            Debug.Log($"playerinfos{order++}: " + info.ToString());
+        }
+
         yield return new WaitForSeconds(delay);
+
+
+        //리스폰 되는 것이 로컬플레이어면 조이스틱의 이벤트를 초기화시켜준다.
+        if(playerID == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            moveJoystick.onPointerDown = null;
+            moveJoystick.onPointerUp = null;
+            attackJoystick.onPointerUp = null;
+            attackJoystick.onPointerDown = null;
+        }
+
+
 
         foreach (var info in playerInfos)
         {
+
+            
+
             int ID = (int)info["playerID"];
             string character = (string)info["character"];
             Vector3 spawnPos = (Vector3)info["spawnPos"];
@@ -438,6 +457,7 @@ public class GameManager : MonoBehaviour
 
             if (ID == playerID)
             {
+                Debug.Log(character + "를 리스폰합니다.");
                 GameObject newCharacter = PhotonNetwork.Instantiate(character, spawnPos, Quaternion.identity);
                 //캐릭터 목록에 추가한다.
                 playerCharacters.Add(newCharacter);
@@ -451,6 +471,8 @@ public class GameManager : MonoBehaviour
                 setup.Team = team;
                 //죽으면 리스폰
                 stats.onPlayerDie += () => Respawn(newCharacter.GetComponent<CharacterSetup>().playerID, respawnWait);
+
+                yield break;
 
 
 

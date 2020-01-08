@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 
 [RequireComponent(typeof(CharacterStats))]
-public class ItemPickup : MonoBehaviour
+public class ItemPickup : MonoBehaviour , IPunInstantiateMagicCallback
 {
     //동전을 줍고, 게임매니저(마스터클라이언트)에게 스코어를 획득했음을 알린다.
 
@@ -20,15 +20,6 @@ public class ItemPickup : MonoBehaviour
     //죽을 때 드랍되는 코인에 가해지는 힘
     public float popPower { get; private set; }
 
-
-    private void Start()
-    {
-        setup = GetComponent<CharacterSetup>();
-        view = GetComponent<PhotonView>();
-        stats = GetComponent<CharacterStats>();
-        stats.onPlayerDie += DropCoins;
-        scoreMgr = ScoreManager.Instance;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -72,4 +63,12 @@ public class ItemPickup : MonoBehaviour
 
     }
 
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        setup = GetComponent<CharacterSetup>();
+        view = GetComponent<PhotonView>();
+        stats = GetComponent<CharacterStats>();
+        stats.onPlayerDie += DropCoins;
+        scoreMgr = ScoreManager.Instance;
+    }
 }

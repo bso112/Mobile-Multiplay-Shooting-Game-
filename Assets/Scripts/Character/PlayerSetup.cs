@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using TMPro;
 
-public class PlayerSetup : CharacterSetup
+public class PlayerSetup : CharacterSetup, IPunInstantiateMagicCallback
 {
 
     private PlayerMotor motor;
@@ -18,8 +18,9 @@ public class PlayerSetup : CharacterSetup
     [HideInInspector] private Button ultiBtn;
 
 
+    private Joystick attackJoystick;
 
-    private void Awake()
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
     {
         //부모가 있다면 떼버린다.
         transform.parent = null;
@@ -27,13 +28,6 @@ public class PlayerSetup : CharacterSetup
         photonView = GetComponent<PhotonView>();
         motor = GetComponent<PlayerMotor>();
         shooter = GetComponent<Shooter>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        //부모가 있다면 떼버린다.
-        transform.parent = null;
 
         if (photonView.IsMine)
         {
@@ -41,12 +35,12 @@ public class PlayerSetup : CharacterSetup
             followCam = Camera.main.transform.GetComponent<FollowCam>();
             followCam.target = gameObject;
             motor.moveJoystick = canvas.Find("Movement Joystick").GetComponent<Joystick>();
-            Joystick attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
+            attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
             motor.attackJoystick = attackJoystick;
             attackJoystick.onPointerUp += GetComponent<Shooter>().OnShotButtonClicked;
             ultiBtn = canvas.Find("UltimateButton").GetComponent<Button>();
             ultiBtn.onClick.AddListener(GetComponent<Shooter>().OnUltiButtonClicked);
-            
+
 
 
         }
@@ -57,17 +51,8 @@ public class PlayerSetup : CharacterSetup
         }
 
         SetPlayerName();
-
-        
-
     }
 
-
-    private void OnDestroy()
-    {
-        Joystick attackJoystick = canvas.Find("Attack Joystick").GetComponent<Joystick>();
-        attackJoystick.onPointerUp -= GetComponent<Shooter>().OnShotButtonClicked;
-    }
 
 
     private void SetPlayerName()
@@ -88,4 +73,6 @@ public class PlayerSetup : CharacterSetup
     {
         Team = _team;
     }
+
+
 }

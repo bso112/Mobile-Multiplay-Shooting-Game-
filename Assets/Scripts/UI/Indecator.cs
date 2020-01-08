@@ -21,12 +21,13 @@ public class Indecator : MonoBehaviour
 
     public void Start()
     {
-
-        stats = transform.GetComponentInParent<CharacterStats>();
-        attackJoystick = GameObject.Find("Canvas").transform.Find("Attack Joystick").GetComponent<Joystick>();
-        attackJoystick.onPointerDown += OnPointerDown;
-        attackJoystick.onPointerUp += OnPointerUp;
-
+        if(transform.root.GetComponent<PhotonView>().IsMine)
+        {
+            stats = transform.GetComponentInParent<CharacterStats>();
+            attackJoystick = GameObject.Find("Canvas").transform.Find("Attack Joystick").GetComponent<Joystick>();
+            attackJoystick.onPointerDown += OnPointerDown;
+            attackJoystick.onPointerUp += OnPointerUp;
+        }
 
         //처음엔 비활성화 상태여야함.
         gameObject.SetActive(false);
@@ -37,22 +38,18 @@ public class Indecator : MonoBehaviour
 
     private void OnPointerDown()
     {
-        gameObject.SetActive(true);
+        //이벤트가 실행됬는데 게임오브젝트는 파괴되어있을 수 있다.
+        if(gameObject != null)
+            gameObject.SetActive(true);
     }
 
     private void OnPointerUp()
     {
         if (!isThrowable) { transform.root.rotation = transform.rotation; }
-        gameObject.SetActive(false);
+        if(gameObject != null)
+            gameObject.SetActive(false);
     }
 
-
-    private void OnDestroy()
-    {
-        attackJoystick.onPointerDown -= OnPointerDown;
-        attackJoystick.onPointerUp -= OnPointerUp;
-
-    }
 
 
     private void FixedUpdate()

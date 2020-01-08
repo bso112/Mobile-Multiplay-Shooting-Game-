@@ -173,7 +173,7 @@ public class AIController : CharacterController
             {
 
                 //파라볼라슈터는 타겟을 정해줘야한다.
-                ParabolaShooter parabolaShooter = target.GetComponent<ParabolaShooter>();
+                ParabolaShooter parabolaShooter = GetComponent<ParabolaShooter>();
                 if (parabolaShooter != null)
                 {
                     parabolaShooter.target = target.transform;

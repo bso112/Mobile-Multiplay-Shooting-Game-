@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public abstract class CharacterController : MonoBehaviour
 {
     public bool isHiding {get; protected set;}

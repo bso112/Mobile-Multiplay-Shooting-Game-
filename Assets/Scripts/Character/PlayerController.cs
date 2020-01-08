@@ -7,7 +7,7 @@ using Photon.Pun;
 /// <summary>
 /// 상황에 따라 캐릭터의 상태를 변화시키는 스크립트
 /// </summary>
-public class PlayerController : CharacterController
+public class PlayerController : CharacterController, IPunInstantiateMagicCallback
 {
 
     //풀어 들어갈때만 숨기고 나올때만 원래대로 하려고 쓰는 카운트 변수
@@ -27,33 +27,6 @@ public class PlayerController : CharacterController
     //AI냐?
     protected bool isAI;
 
-    private void Start()
-    {
-        setup = GetComponent<PlayerSetup>();
-        view = GetComponent<PhotonView>();
-
-        if (isAI)
-            return;
-
-        if (view != null)
-        {
-            if (view.IsMine)
-            {
-                //UI셋팅
-                Transform canvas = GameObject.Find("Canvas").transform;
-                ultiBtn = canvas.Find("UltimateButton").GetComponent<Button>();
-                ultiBtn.enabled = false;
-                ultiAnim = ultiBtn.transform.Find("Skull").GetComponent<Animator>();
-                ultiFill = ultiBtn.transform.Find("ChargeAmount").GetComponent<Image>();
-
-                respawnTimer = canvas.Find("RespawnTimerHolder").transform.GetChild(0).gameObject;
-                GetComponent<CharacterStats>().onPlayerDie += () => { respawnTimer.SetActive(true); };
-            }
-        }
-        else
-            Debug.Log("포톤 뷰가 없습니다!");
-
-    }
 
 
     /// <summary>
@@ -64,6 +37,11 @@ public class PlayerController : CharacterController
     {
         val = Mathf.Clamp(val, 0, 1);
         ultiCharage += val;
+        if(ultiFill == null)
+        {
+            Debug.Log("ultiFill이 없어!");
+            ultiFill = ultiBtn.transform.Find("ChargeAmount").GetComponent<Image>();
+        }
         ultiFill.fillAmount = ultiCharage;
 
         //궁극기가 준비되면
@@ -165,6 +143,35 @@ public class PlayerController : CharacterController
 
     }
 
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+
+        
+        Debug.Log("포톤 메시지 : " + info);
+        setup = GetComponent<PlayerSetup>();
+        view = GetComponent<PhotonView>();
+
+        if (isAI)
+            return;
+
+        if (view != null)
+        {
+            if (view.IsMine)
+            {
+                //UI셋팅
+                Transform canvas = GameObject.Find("Canvas").transform;
+                ultiBtn = canvas.Find("UltimateButton").GetComponent<Button>();
+                ultiAnim = ultiBtn.transform.Find("Skull").GetComponent<Animator>();
+                ultiFill = ultiBtn.transform.Find("ChargeAmount").GetComponent<Image>();
+               
 
 
+                respawnTimer = canvas.Find("RespawnTimerHolder").transform.GetChild(0).gameObject;
+                GetComponent<CharacterStats>().onPlayerDie += () => { respawnTimer.SetActive(true); };
+            }
+        }
+        else
+            Debug.Log("포톤 뷰가 없습니다!");   
+
+    }
 }

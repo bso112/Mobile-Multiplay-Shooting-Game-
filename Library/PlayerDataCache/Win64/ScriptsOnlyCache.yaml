@@ -222,8 +222,6 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10350}
     - Class: 114
-      Script: {instanceID: 10372}
-    - Class: 114
       Script: {instanceID: 10386}
     - Class: 114
       Script: {instanceID: 10436}
@@ -253,8 +251,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11304}
     - Class: 114
       Script: {instanceID: 11394}
-    - Class: 114
-      Script: {instanceID: 25574}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -267,6 +263,10 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
+    - Class: 195
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
     - Class: 198
       Script: {instanceID: 0}
     - Class: 199
@@ -278,6 +278,8 @@ ScriptsOnlyBuild:
     - Class: 223
       Script: {instanceID: 0}
     - Class: 224
+      Script: {instanceID: 0}
+    - Class: 238
       Script: {instanceID: 0}
     - Class: 258
       Script: {instanceID: 0}
@@ -459,7 +461,7 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11400}
     - Class: 114
-      Script: {instanceID: 25574}
+      Script: {instanceID: 47098}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -473,6 +475,8 @@ ScriptsOnlyBuild:
     - Class: 143
       Script: {instanceID: 0}
     - Class: 157
+      Script: {instanceID: 0}
+    - Class: 195
       Script: {instanceID: 0}
     - Class: 198
       Script: {instanceID: 0}
@@ -1247,7 +1251,7 @@ ScriptsOnlyBuild:
     className: ToDemoHubButton
   - hash:
       serializedVersion: 2
-      Hash: 071b175f42a79ae4a3f3661abf0fa50b
+      Hash: dd82c1575b3ebb36c7b40bcef4004357
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Bomb
@@ -1577,7 +1581,7 @@ ScriptsOnlyBuild:
     className: ActivateTrigger
   - hash:
       serializedVersion: 2
-      Hash: 2bfad392f77a128d4c6afe4d8a518627
+      Hash: 4668f8105cec69a75cbd1d9729a58928
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -1635,12 +1639,6 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp-firstpass.dll
     namespaceName: UnityStandardAssets.Cameras
     className: LookatTarget
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: test
   - hash:
       serializedVersion: 2
       Hash: 57d2b3ca58a430f7cf319bb757c1f0f5
@@ -2075,7 +2073,7 @@ ScriptsOnlyBuild:
     className: PointedAtGameObjectInfo
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: d343d1f82e8af129eac1662ba25765cd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: AIController
@@ -2273,7 +2271,7 @@ ScriptsOnlyBuild:
     className: PropertyCell
   - hash:
       serializedVersion: 2
-      Hash: be7c58ece932a007a8001107d96fa9b9
+      Hash: 5f6fbab20e8656d9ceebecbddbd8ccef
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Projectile
@@ -2363,7 +2361,7 @@ ScriptsOnlyBuild:
     className: TextMeshProUGUI
   - hash:
       serializedVersion: 2
-      Hash: 9831af97c5638802b770b0bea7154a38
+      Hash: 86c8a5424d365d91626af47c09b5f904
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: RespawnTimerController
@@ -2597,7 +2595,7 @@ ScriptsOnlyBuild:
     className: MoveByKeys
   - hash:
       serializedVersion: 2
-      Hash: 725c8470510589ff012e11efc99efe99
+      Hash: 0f33df62acef4eb6e3681fc5b2f60655
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Bullet

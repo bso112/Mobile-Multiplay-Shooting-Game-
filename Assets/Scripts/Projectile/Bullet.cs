@@ -108,7 +108,11 @@ public class Bullet : Projectile
             //상대 캐릭터의 공격력만큼 데미지 준다.
             target.TakeDamageRPC(ownerStats.attack.GetValue());
             //캐릭터의 궁극기 게이지를 채운다.
-            owner.GetComponent<CharacterController>().AddUltiCharge(ultiCharge);
+            CharacterController characterCon = owner.GetComponent<CharacterController>();
+            if (characterCon != null)
+                characterCon.AddUltiCharge(ultiCharge);
+            else
+                Debug.Log("궁극기를 채우려는데 컨트롤러가 없음!");
 
             //터질때 나타나는 이펙트
             GameObject particle = pool.Instantiate(impactParticle.name, transform.position, Quaternion.FromToRotation(Vector3.up, impactNormal));
